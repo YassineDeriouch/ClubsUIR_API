@@ -38,14 +38,10 @@ Functionalities :
 - phpMyAdmin 
 - xampp
 
-### Credits 
-The whole project including Frontend and Backend API (Fullstack) was developed by a team of two 4th-year software engineering students for their academic project at our university.
-Special greetings to the key individuals who contributed significantly to this project from the beginning and made it a resounding success.
-
 Made by : - [Yassine Deriouch](https://github.com/YassineDeriouch) and [Youssef Bouichenade](https://github.com/Youssef-Yb07/) 
 <br>
 
-```						     Made with ❤️ and java		     			      ``` <br>
+```						     Made with ❤️ and java		     			     ``` <br>
 
 
 
