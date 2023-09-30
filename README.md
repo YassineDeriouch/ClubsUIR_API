@@ -1,7 +1,7 @@
 # Clubs UIR - API
 
 This repository contains the RESTful API made for UIR clubs management system, by a group of software engineering students of the University Internationale of Rabat.
-The main purpose is to offer useful a web based plateform to manage [UIR](https://www.uir.ac.ma/en) clubs . 
+The main purpose is to offer useful a web-based platform to manage [UIR](https://www.uir.ac.ma/en) clubs. 
 Functionalities : 
   - Admin management
   - Clubs management
@@ -16,7 +16,7 @@ Functionalities :
   - Administrator
   - Academic manager
   - Student,   can be :
-      - Club president 
+      - Club President 
       - Vice President 
       - Secretary
       - Treasurer
@@ -29,12 +29,13 @@ Functionalities :
 - Hibernate 
 - JPA
 - MySQL SGBD
-- Apache embadded sever
+- Spring-boot embedded Tomcat server
 
-## Developement Tools
+## Development Tools
 
 - Intellij IDEA 
 - Swagger-UI
+- Postman
 - phpMyAdmin 
 - xampp
 
