@@ -1,22 +1,15 @@
 package com.example.api.Controller;
 
-import com.example.api.Models.LoginRequestDto;
+import com.example.api.Models.CompteDto;
 import com.example.api.Service.AuthService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.Data;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
-
 
 @Data
 @RestController
@@ -27,8 +20,18 @@ public class AuthController {
     @Autowired private AuthService authService;
     @Autowired private HttpServletRequest request;
     @Autowired private HttpServletResponse response;
+    @PostMapping("/login")
+    public ResponseEntity<CompteDto> Authentication(@RequestParam String email,@RequestParam String password){
+        try{
+            CompteDto compteDto = authService.login(email,password);
+            return ResponseEntity.ok(compteDto);
+        }catch (Exception exception){
+            exception.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
-    @PostMapping("/login") //pass object instead of params
+    /*@PostMapping("/login")
     public ResponseEntity<Map<String, String>> userAuthentication(@RequestBody LoginRequestDto loginRequestDto){
         try{
             String auth = authService.login(loginRequestDto);
@@ -39,13 +42,13 @@ public class AuthController {
 
             return ResponseEntity.ok(response);
             //return new ResponseEntity<>(auth, HttpStatus.OK);
-        }catch (UsernameNotFoundException exception){
+        }catch (Exception exception){
             exception.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
+    }*/
 
-    @PostMapping("/logout")
+   /* @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
         // Retrieve the current session
         HttpSession session = request.getSession(false);
@@ -61,7 +64,7 @@ public class AuthController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No session found, or user already logged out");
         }
-    }
+    }*/
 
 
 
@@ -73,5 +76,9 @@ public class AuthController {
 
 
 
+
+
 }
+
+
 

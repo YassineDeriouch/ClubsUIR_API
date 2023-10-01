@@ -102,5 +102,24 @@ public class AdminService {
         return modelMapper.map(adminOptional.get(), AdminModel.class);
     }
 
+    public boolean findAdminModelByEmail(String email){
+        Optional<AdminModel> adminModel = Optional.ofNullable(adminRepository.findByEmail(email));
+        if(adminModel.isPresent()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    public boolean findAdminModelByPassword(String password){
+        Optional<AdminModel> adminModel = Optional.ofNullable(adminRepository.findByPassword(password));
+        if(adminModel.isPresent()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
 
 }

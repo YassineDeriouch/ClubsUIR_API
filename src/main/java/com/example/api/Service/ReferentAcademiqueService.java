@@ -118,6 +118,25 @@ public class ReferentAcademiqueService {
             throw new EntityNotFoundException("The referent list is empty");
         }
     }
+
+    public boolean findReferentAcademiqueModelByEmail(String email) {
+        Optional<ReferentAcademiqueModel> referentAcademiqueModel = Optional.ofNullable(referentRepository.findByEmail(email));
+
+        if (referentAcademiqueModel.isPresent()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public boolean findReferentAcademiqueModelByPassword(String password) {
+        Optional<ReferentAcademiqueModel> referentAcademiqueModel = Optional.ofNullable(referentRepository.findByPassword(password));
+
+        if (referentAcademiqueModel.isPresent()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 

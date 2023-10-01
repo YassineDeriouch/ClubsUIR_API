@@ -125,4 +125,24 @@ public class EtudiantService {
                 .collect(Collectors.toList());
 }
 
+    public boolean findEtudiantModelByEmail(String email){
+        Optional<EtudiantModel> etudiantopt= Optional.ofNullable(etudiantRepository.findByEmail(email));
+        if(etudiantopt.isPresent()){
+        return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public boolean findEtudiantModelByPassword(String password){
+        Optional<EtudiantModel> etudiantopt= Optional.ofNullable(etudiantRepository.findByPassword(password));
+        if(etudiantopt.isPresent()){
+        return true;
+        }
+        else{
+            return false;
+        }
+    }
+
 }

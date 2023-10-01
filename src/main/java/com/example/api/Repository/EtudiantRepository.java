@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EtudiantRepository extends JpaRepository<EtudiantModel, Integer> {
     EtudiantModel findByEmail(String email);
+    EtudiantModel findByPassword(String password);
+
 }

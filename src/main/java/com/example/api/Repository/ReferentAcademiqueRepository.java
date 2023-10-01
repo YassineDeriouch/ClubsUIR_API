@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ReferentAcademiqueRepository extends JpaRepository<ReferentAcademiqueModel, Integer> {
-
     ReferentAcademiqueModel findByEmail(String email);
+    ReferentAcademiqueModel findByPassword(String password);
 }

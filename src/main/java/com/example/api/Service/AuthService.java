@@ -1,7 +1,7 @@
 package com.example.api.Service;
 
 import com.example.api.Models.AdminModel;
-import com.example.api.Models.LoginRequestDto;
+import com.example.api.Models.CompteDto;
 import com.example.api.Models.EtudiantModel;
 import com.example.api.Models.ReferentAcademiqueModel;
 import com.example.api.Repository.AdminRepository;
@@ -9,14 +9,8 @@ import com.example.api.Repository.EtudiantRepository;
 import com.example.api.Repository.ReferentAcademiqueRepository;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-/**
- * @author Yassine Deriouch
- * @project API
- */
 @Data
 @Service
 public class AuthService {
@@ -25,31 +19,45 @@ public class AuthService {
     private AdminRepository adminRepository;
     @Autowired
     private EtudiantRepository etudiantRepository;
-
+    @Autowired
+    private EtudiantService etudiantService;
+    @Autowired
+    private ReferentAcademiqueService referentAcademiqueService;
+    @Autowired
+    private AdminService adminService;
     @Autowired
     private ReferentAcademiqueRepository referentRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
-    public String login(LoginRequestDto authenticationRequest) throws UsernameNotFoundException{
-        String email = authenticationRequest.getEmail();
-        String password = authenticationRequest.getPassword();
+    public CompteDto login(String login ,String password){
+        CompteDto compteDto = new CompteDto();
 
-        AdminModel admin = adminRepository.findByEmail(email);
-        EtudiantModel etudiant = etudiantRepository.findByEmail(email);
-        ReferentAcademiqueModel referent = referentRepository.findByEmail(email);
+        if(etudiantService.findEtudiantModelByEmail(login) && etudiantService.findEtudiantModelByPassword(password)){
+            EtudiantModel e=etudiantRepository.findByEmail(login);
+            compteDto.setIcompte(e.getId_etudiant());
+            compteDto.setLogin(login);
+            compteDto.setPassword(password);
+            compteDto.setRole(e.getFkrole().getLibelle());
+        }
+        else if(adminService.findAdminModelByEmail(login) && adminService.findAdminModelByPassword(password)){
+            AdminModel adminModel=adminRepository.findByEmail(login);
+            compteDto.setIcompte(adminModel.getId_admin());
+            compteDto.setLogin(login);
+            compteDto.setPassword(password);
+            compteDto.setRole("admin");
+        }
+        else if(referentAcademiqueService.findReferentAcademiqueModelByEmail(login) && referentAcademiqueService.findReferentAcademiqueModelByPassword(password)){
+            ReferentAcademiqueModel referentAcademiqueModel=referentRepository.findByEmail(login);
+            compteDto.setIcompte(referentAcademiqueModel.getId_referent());
+            compteDto.setLogin(login);
+            compteDto.setPassword(password);
+            compteDto.setRole("referent");
+        }
+        return compteDto;
+        }
 
-        if (admin != null && passwordEncoder.matches(password, admin.getPassword())) {
-            return "admin";
-        }
-        else if (etudiant != null && passwordEncoder.matches(password, etudiant.getPassword())) {
-            return etudiant.getFkrole().getLibelle();
-        }
-        else if(referent != null && passwordEncoder.matches(password, referent.getPassword())){
-            return "referent";
-        }
-        else {
-            throw new UsernameNotFoundException("Bad credentials");
-        }
-    }
+
+
 }
+
+
+
