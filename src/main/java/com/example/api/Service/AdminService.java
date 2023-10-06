@@ -51,7 +51,7 @@ public class AdminService {
     public AdminModel updateAdmin(int idAdmin, AdminModel adminModel) throws EntityNotFoundException {
         Optional<AdminModel> adminOptional = adminRepository.findById(idAdmin);
         if(adminOptional.isPresent()){
-           AdminModel adminModel1 =  modelMapper.map(adminOptional, AdminModel.class);
+           AdminModel adminModel1 =  modelMapper.map(adminModel, AdminModel.class);
            adminModel1.setId_admin(idAdmin);
            AdminModel updated = adminRepository.save(adminModel1);
            return modelMapper.map(updated, AdminModel.class);

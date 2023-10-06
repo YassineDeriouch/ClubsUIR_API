@@ -24,9 +24,8 @@ public class AdminController {
 
     @Autowired private AdminService adminService;
 
-    @CrossOrigin
     @PostMapping(value = "/save")
-    public ResponseEntity<AdminModel> saveRole(@RequestBody AdminModel adminModel){
+    public ResponseEntity<AdminModel> saveAdmin(@RequestBody AdminModel adminModel){
         try{
             return new ResponseEntity<>(adminService.saveAdmin(adminModel), HttpStatus.OK);
         }catch (Exception exception){
@@ -34,6 +33,18 @@ public class AdminController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PutMapping(value = "/update/{idAdmin}")
+    public ResponseEntity<AdminModel> updateAdmin(@PathVariable int idAdmin, @RequestBody AdminModel adminModel){
+        try{
+            return new ResponseEntity<>(adminService.updateAdmin(idAdmin,adminModel), HttpStatus.OK);
+        }catch (Exception exception){
+            exception.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 
     @CrossOrigin("*")
     @GetMapping(value = "/get/{id}")
