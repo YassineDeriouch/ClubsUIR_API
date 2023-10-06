@@ -1,4 +1,5 @@
     package com.example.api.Models;
+    import com.fasterxml.jackson.annotation.JsonIgnore;
     import jakarta.persistence.*;
     import lombok.Data;
 
@@ -33,5 +34,6 @@
                 joinColumns = @JoinColumn(name = "id_evenement"),
                 inverseJoinColumns = @JoinColumn(name = "id_club"))
         private List<ClubModel> participants;
+
 
     }

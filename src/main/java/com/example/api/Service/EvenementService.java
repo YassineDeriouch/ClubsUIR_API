@@ -21,9 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -227,6 +225,19 @@ public class EvenementService {
 
         document.add(table);
         document.close();
+    }
+
+
+   public List<ClubModel> getClubsByEvent(int idEvent){
+        Optional<EvenementModel> optionalEvenement=evenementRepository.findById(idEvent);
+
+        if(optionalEvenement.isPresent()){
+            EvenementModel evenementModel=optionalEvenement.get();
+            return evenementModel.getParticipants();
+        }
+        else
+            throw new EntityNotFoundException("Event not found ! id : " + idEvent);
+
     }
 
 }

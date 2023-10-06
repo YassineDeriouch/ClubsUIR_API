@@ -1,5 +1,6 @@
 package com.example.api.Controller;
 
+import com.example.api.Models.ClubModel;
 import com.example.api.Models.EtudiantModel;
 import com.example.api.Models.EvenementModel;
 import com.example.api.Models.EvenementStatut;
@@ -22,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("evenement")
 @Data
+@CrossOrigin(origins = "*")
 public class EvenementController {
 
     //Inject EvenementService to the controller to use its methods whith Autowired annotation
@@ -145,5 +147,16 @@ public class EvenementController {
         response.setHeader(headerkey, headervalue);
         evenementService.genererListClubsParEvent(eventLibelle,response);
     }
+
+    @GetMapping("get/clubs/event")
+    public ResponseEntity<List<ClubModel>> getClubsByEvent(@RequestParam int idEvenement){
+        try {
+            return new ResponseEntity<>(evenementService.getClubsByEvent(idEvenement), HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }

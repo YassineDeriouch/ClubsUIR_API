@@ -3,6 +3,7 @@
     import com.fasterxml.jackson.annotation.JsonIgnore;
     import jakarta.persistence.*;
     import lombok.Data;
+    import lombok.ToString;
     import org.apache.commons.lang3.builder.ToStringExclude;
 
     import java.util.List;
@@ -58,5 +59,7 @@
                 joinColumns = @JoinColumn(name = "id_club"),
                 inverseJoinColumns = @JoinColumn(name = "id_reunion", referencedColumnName = "id_reunion"))*/
         private ReunionModel reunionModel;
+
+
 
     }
