@@ -21,6 +21,7 @@ import java.util.List;
 
 @RestController
 @Data
+@CrossOrigin
 @RequestMapping(value = "etudiant")
 public class EtudiantController {
     @Autowired
@@ -68,6 +69,9 @@ public class EtudiantController {
         try {
             List<EtudiantModel> list = etudiantService.getStudentsByClub(idClub);
             return new ResponseEntity<>(list, HttpStatus.OK);
+        } catch (EntityNotFoundException entityNotFoundException) {
+            entityNotFoundException.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception exception) {
             exception.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -75,7 +79,6 @@ public class EtudiantController {
     }
 
     // get etd by club name
-    @CrossOrigin
     @GetMapping(value = "/get/ByClub/name")
     public ResponseEntity<List<EtudiantModel>> getStudentByClubName(@RequestParam String clubName) {
         try {
@@ -88,7 +91,6 @@ public class EtudiantController {
     }
 
     //Affect etd to club
-    @CrossOrigin
     @PostMapping(value = "/affect/StudentToClub")
     public ResponseEntity<EtudiantModel> affectStudentToClub(@RequestParam int idEtudiant, @RequestParam int idClub) {
         try {
@@ -101,11 +103,4 @@ public class EtudiantController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
-
-
-
-
-
 }

@@ -34,7 +34,6 @@ public class ClubController {
      * @param clubModel
      * @return ResponseEntity
      */
-    @CrossOrigin
     @PostMapping(value = "/save")
     public ResponseEntity<ClubModel> saveClub (@Valid @RequestBody ClubModel clubModel){
         try {
@@ -51,7 +50,7 @@ public class ClubController {
      * @param id
      * @return
      */
-    @CrossOrigin
+     
     @PutMapping(value = "/update/idClub")
     public ResponseEntity <ClubModel> updateClub(@RequestBody ClubModel clubModel, @RequestParam int id){
         try{
@@ -69,7 +68,7 @@ public class ClubController {
      * @return ResponseEntity
      */
 
-    @CrossOrigin
+     
     @GetMapping(value = "/get/{id}")
     public ResponseEntity<ClubModel> getClubByID(@PathVariable int id){
         try{
@@ -86,7 +85,7 @@ public class ClubController {
      * @param libelle
      * @return ResponseEntity
      */
-    @CrossOrigin
+     
     @GetMapping(value = "/get/clubName")
     public ResponseEntity<ClubModel> getClubByName(@RequestParam String libelle){
         try {
@@ -102,7 +101,7 @@ public class ClubController {
      * List all clubs
      * @return ResponseEntity
      */
-    @CrossOrigin
+     
     @GetMapping(value = "/get/All")
     public ResponseEntity<List<ClubModel>> getAllClubs(){
         try {
@@ -118,7 +117,7 @@ public class ClubController {
      * Delete club by ID
      * @return ResponseEntity
      */
-    @CrossOrigin
+     
     @DeleteMapping (value = "/delete/{id}")
     public ResponseEntity<ClubModel> deleteClubByID(@PathVariable int id){
         try{
@@ -135,7 +134,7 @@ public class ClubController {
      * DELETE ALL CLUBS
      * @return
      */
-    @CrossOrigin
+     
     @DeleteMapping (value = "/delete/All")
     public ResponseEntity<ClubModel> deleteAllClubs(){
         try{
@@ -152,7 +151,7 @@ public class ClubController {
      * @param id
      * @return
      */
-    @CrossOrigin
+     
     @GetMapping(value = "/get/participants/idClub")
     public ResponseEntity<List<EtudiantModel>> getClubParticipants(@RequestParam int id){
         try{
@@ -170,7 +169,7 @@ public class ClubController {
      * @param clubModel
      * @return
      */
-    @CrossOrigin
+     
     @PostMapping(value = "/send/demandeCreation")
     public ResponseEntity<ClubModel> sendDemande(@RequestParam int idEtd,@RequestBody ClubModel clubModel){
         try{
@@ -187,7 +186,7 @@ public class ClubController {
      * @param status
      * @return
      */
-    @CrossOrigin
+     
     @GetMapping(value = "/get/ClubByStatus")
     public ResponseEntity<List<ClubModel>> getClubByStatus(@RequestParam ClubStatut status){
         try{
@@ -204,7 +203,7 @@ public class ClubController {
      * @param idClub
      * @return
      */
-    @CrossOrigin
+     
     @PutMapping(value = "/valider/CreationClub")
     public ResponseEntity<ClubModel> updateClubStatus(@RequestParam int idClub){
         try{
@@ -215,7 +214,7 @@ public class ClubController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @CrossOrigin
+     
     @DeleteMapping(value = "/delete/student={idEtudiant}/club={clubName}")
     public ResponseEntity<ClubModel> deleteStudentFromClub(@PathVariable String clubName, @PathVariable int idEtudiant) {
         try {
@@ -230,7 +229,7 @@ public class ClubController {
     /**
      * GET TOTAL OF EXISTING CLUBS
      */
-    @CrossOrigin
+     
     @GetMapping("/TotalClubs")
     public ResponseEntity<Integer> getTotalClubs(){
         try {
