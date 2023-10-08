@@ -240,4 +240,13 @@ public class EvenementService {
 
     }
 
+    public EvenementModel CreerEventByAdmin(EvenementModel evenementModel){
+        try{
+            return evenementRepository.save(evenementModel);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new IllegalStateException("Error while creating event");
+        }
+    }
+
 }

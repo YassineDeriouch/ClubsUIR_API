@@ -1,5 +1,6 @@
 package com.example.api.Controller;
 
+import com.example.api.Models.EtudiantModel;
 import com.example.api.Models.ReferentAcademiqueModel;
 import com.example.api.Models.RoleModel;
 import com.example.api.Service.ReferentAcademiqueService;
@@ -20,6 +21,7 @@ import java.util.List;
 @RestController
 @Data
 @RequestMapping (value = "referentAcademique")
+@CrossOrigin(origins = "*")
 public class ReferentAcademiqueController {
 
     @Autowired private ReferentAcademiqueService referentService;
@@ -29,7 +31,7 @@ public class ReferentAcademiqueController {
      * @param referent
      * @return
      */
-    @CrossOrigin("*")
+
     @PostMapping (value = "/save")
     public ResponseEntity<ReferentAcademiqueModel> addReferent(@RequestBody ReferentAcademiqueModel referent){
        try {
@@ -46,7 +48,7 @@ public class ReferentAcademiqueController {
      * @param id
      * @return
      */
-    @CrossOrigin("*")
+
     @PutMapping("/update/{id}")
     public ResponseEntity<ReferentAcademiqueModel> updateReferent(@RequestBody ReferentAcademiqueModel referent,@PathVariable int id){
         try {
@@ -96,11 +98,20 @@ public class ReferentAcademiqueController {
         }
     }
 
-    @CrossOrigin
     @DeleteMapping(value = "/delete/all")
     public ResponseEntity<ReferentAcademiqueModel> deleteAllRoles(){
         try{
             return new ResponseEntity<>(referentService.deleteAll(), HttpStatus.OK);
+        }catch (EntityNotFoundException exception){
+            exception.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("list/students/club/referent")
+    public ResponseEntity<List<EtudiantModel>> getReferentsByClub(@RequestParam int idRef){
+        try{
+            return new ResponseEntity<>(referentService.ListStudentsInHisClub(idRef), HttpStatus.OK);
         }catch (EntityNotFoundException exception){
             exception.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

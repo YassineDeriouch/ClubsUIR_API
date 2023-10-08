@@ -1,6 +1,7 @@
 package com.example.api.Service;
 
 import com.example.api.Models.ClubModel;
+import com.example.api.Models.EtudiantModel;
 import com.example.api.Models.ReferentAcademiqueModel;
 import com.example.api.Models.ReferentAcademiqueModel;
 import com.example.api.Repository.ReferentAcademiqueRepository;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,7 +54,7 @@ public class ReferentAcademiqueService {
      * @return
      */
     @Transactional
-    public ReferentAcademiqueModel updateReferent(ReferentAcademiqueModel referent, int id) throws EntityNotFoundException{
+    public ReferentAcademiqueModel updateReferent(ReferentAcademiqueModel referent, int id) throws EntityNotFoundException {
         Optional<ReferentAcademiqueModel> referentOptional = referentRepository.findById(id);
         if (referentOptional.isPresent()) {
             ReferentAcademiqueModel referentAcademique = modelMapper.map(referent, ReferentAcademiqueModel.class);
@@ -61,11 +63,12 @@ public class ReferentAcademiqueService {
             return modelMapper.map(updated, ReferentAcademiqueModel.class);
         } else {
             throw new EntityNotFoundException("this club does not exist !!");
-         }
+        }
     }
 
     /**
      * GET ALL
+     *
      * @return
      */
     @Transactional
@@ -75,11 +78,12 @@ public class ReferentAcademiqueService {
     }
 
     /**
-     *  GET BY ID
+     * GET BY ID
+     *
      * @Param id
      */
     @Transactional
-    public ReferentAcademiqueModel getReferentByID(int id) throws EntityNotFoundException{
+    public ReferentAcademiqueModel getReferentByID(int id) throws EntityNotFoundException {
         Optional<ReferentAcademiqueModel> referent = referentRepository.findById(id);
         return modelMapper.map(referent, ReferentAcademiqueModel.class);
     }
@@ -87,17 +91,18 @@ public class ReferentAcademiqueService {
 
     /**
      * DELETE ROLE BY ID
+     *
      * @param id
      * @return
      * @throws EntityNotFoundException
      */
     @Transactional
-    public ReferentAcademiqueModel deleteByID(int id) throws EntityNotFoundException{
+    public ReferentAcademiqueModel deleteByID(int id) throws EntityNotFoundException {
         Optional<ReferentAcademiqueModel> roleOptional = referentRepository.findById(id);
-        if(roleOptional.isPresent()){
+        if (roleOptional.isPresent()) {
             referentRepository.deleteById(id);
-            return modelMapper.map(roleOptional,ReferentAcademiqueModel.class);
-        }else{
+            return modelMapper.map(roleOptional, ReferentAcademiqueModel.class);
+        } else {
             System.out.println();
             throw new EntityNotFoundException("this referent does not exist !");
         }
@@ -105,11 +110,12 @@ public class ReferentAcademiqueService {
 
     /**
      * DELETE ALL ROLES BY ID
+     *
      * @return
      * @throws EntityNotFoundException
      */
     @Transactional
-    public ReferentAcademiqueModel deleteAll() throws EntityNotFoundException{
+    public ReferentAcademiqueModel deleteAll() throws EntityNotFoundException {
         List<ReferentAcademiqueModel> referentList = referentRepository.findAll();
         if (!referentList.isEmpty()) {
             referentRepository.deleteAll();
@@ -128,6 +134,7 @@ public class ReferentAcademiqueService {
             return false;
         }
     }
+
     public boolean findReferentAcademiqueModelByPassword(String password) {
         Optional<ReferentAcademiqueModel> referentAcademiqueModel = Optional.ofNullable(referentRepository.findByPassword(password));
 
@@ -137,6 +144,21 @@ public class ReferentAcademiqueService {
             return false;
         }
     }
+
+    public List<EtudiantModel> ListStudentsInHisClub(int idReferent) {
+        Optional<ReferentAcademiqueModel> optref = referentRepository.findById(idReferent);
+
+        if (optref.isPresent()) {
+            ReferentAcademiqueModel ref = optref.get();
+            List<ClubModel> clubs = ref.getClubModelList();
+            List<EtudiantModel> etudiants = new ArrayList<>();
+            for (ClubModel club : clubs) {
+                etudiants.addAll(club.getEtudiantModelList());
+            }
+            return etudiants;
+        } else {
+            throw new EntityNotFoundException("this referent does not exist !");
+        }
+    }
+
 }
-
-

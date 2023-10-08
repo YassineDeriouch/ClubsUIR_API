@@ -158,5 +158,15 @@ public class EvenementController {
         }
     }
 
+    @PostMapping("/create/Event/Admin")
+    public ResponseEntity<EvenementModel> CreateEventByAdmin(@RequestBody EvenementModel evenementModel){
+        try {
+            return new ResponseEntity<>(evenementService.CreerEventByAdmin(evenementModel), HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }
