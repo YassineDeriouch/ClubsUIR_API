@@ -198,6 +198,18 @@ public class ClubController {
         }
     }
 
+
+    @GetMapping(value = "/get/accepte/etudiantNotExist={idEtudiant}")
+    public ResponseEntity<List<ClubModel>> getClubAccepteWhereUserNotExist(@PathVariable int idEtudiant){
+        try{
+            List<ClubModel> list= clubService.getClubsAccepteWhereUserNotExists(idEtudiant);
+            return new ResponseEntity<>(list, HttpStatus.OK);
+        }catch (Exception exception){
+            exception.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     /**
      * VALIDER CREATION DU CLUB
      * @param idClub

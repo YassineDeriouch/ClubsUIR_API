@@ -212,6 +212,12 @@ public class ClubService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public List<ClubModel> getClubsAccepteWhereUserNotExists(int idEtudiant) throws EntityNotFoundException {
+        return clubRepository.findClubsByStatutWhereUserDoesNotExist(idEtudiant).stream().map(element -> modelMapper.map(element, ClubModel.class))
+                .collect(Collectors.toList());
+    }
+
     //Valider demande de création de club
     @Transactional
     public ClubModel ValiderDemandeCreation(int idClub) {
