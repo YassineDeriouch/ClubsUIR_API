@@ -38,6 +38,9 @@ public class DocumentModel {
 
     @ManyToOne(optional = true)
     private ReferentAcademiqueModel referent;
+
+    @ManyToOne(optional = true)
+    private AdminModel adminModel ;
 /*
     @ManyToMany
     @JoinTable(

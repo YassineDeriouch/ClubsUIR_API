@@ -2,6 +2,7 @@ package com.example.api.Models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.apache.commons.lang3.builder.ToStringExclude;
 
 import java.util.List;
 
@@ -16,10 +17,12 @@ public class ReferentAcademiqueModel {
     private String nom;
     @Column(name="prenom")
     private String prenom;
-    @Column(name="email")
+    @Column(name="email", unique = true)
     private String email;
-    @Column(name="password")
+    @Column(name="password", unique = true)
     private String password;
+    @Column(name="telephone")
+    private String telephone;
 
     // Relation with ClubModel (1,n) : 1 referent academique can have many clubs
     @OneToMany(fetch = FetchType.EAGER)

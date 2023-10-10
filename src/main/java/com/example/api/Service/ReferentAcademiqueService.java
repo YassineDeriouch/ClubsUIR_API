@@ -84,8 +84,7 @@ public class ReferentAcademiqueService {
      */
     @Transactional
     public ReferentAcademiqueModel getReferentByID(int id) throws EntityNotFoundException {
-        Optional<ReferentAcademiqueModel> referent = referentRepository.findById(id);
-        return modelMapper.map(referent, ReferentAcademiqueModel.class);
+        return modelMapper.map(referentRepository.findById(id), ReferentAcademiqueModel.class);
     }
 
 
