@@ -1,8 +1,5 @@
 package com.example.api.Service;
-import com.example.api.Models.ClubModel;
-import com.example.api.Models.EtudiantModel;
-import com.example.api.Models.EventDocsModel;
-import com.example.api.Models.RoleModel;
+import com.example.api.Models.*;
 import com.example.api.Repository.ClubRepository;
 import com.example.api.Repository.EtudiantRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,8 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -142,6 +138,23 @@ public class EtudiantService {
         }
         else{
             return false;
+        }
+    }
+    public Map<String, List<EtudiantModel>> ListParticipantOfHisClub(int idEtd) {
+        Optional<EtudiantModel> opt_etd = etudiantRepository.findById(idEtd);
+        Map<String, List<EtudiantModel>> clubParticipants = new HashMap<>();
+
+        if (opt_etd.isPresent()) {
+            EtudiantModel etd = opt_etd.get();
+            for (ClubModel c : etd.getClubModelList()) {
+                String clubName = c.getLibelle();
+                List<EtudiantModel> participants = c.getEtudiantModelList();
+
+                clubParticipants.put(clubName, participants);
+            }
+            return clubParticipants;
+        } else {
+            throw new IllegalStateException("Error");
         }
     }
 

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Youssef
@@ -103,4 +104,14 @@ public class EtudiantController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("list/students/of/EtdClub")
+    public ResponseEntity<Map<String, List<EtudiantModel>>> getReferentsByClub(@RequestParam int idStudent){
+        try{
+            return new ResponseEntity<>(etudiantService.ListParticipantOfHisClub(idStudent), HttpStatus.OK);
+        }catch (EntityNotFoundException exception){
+            exception.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }
