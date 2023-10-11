@@ -149,7 +149,6 @@ public class EtudiantService {
             for (ClubModel c : etd.getClubModelList()) {
                 String clubName = c.getLibelle();
                 List<EtudiantModel> participants = c.getEtudiantModelList();
-
                 clubParticipants.put(clubName, participants);
             }
             return clubParticipants;
@@ -157,5 +156,6 @@ public class EtudiantService {
             throw new IllegalStateException("Error");
         }
     }
+
 
 }

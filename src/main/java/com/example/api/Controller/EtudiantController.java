@@ -105,12 +105,12 @@ public class EtudiantController {
         }
     }
     @GetMapping("list/students/of/EtdClub")
-    public ResponseEntity<Map<String, List<EtudiantModel>>> getReferentsByClub(@RequestParam int idStudent){
+    public ResponseEntity<Map<String, List<EtudiantModel>>> getListofParticipantOfHisClub(@RequestParam int idStudent){
         try{
             return new ResponseEntity<>(etudiantService.ListParticipantOfHisClub(idStudent), HttpStatus.OK);
         }catch (EntityNotFoundException exception){
             exception.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
