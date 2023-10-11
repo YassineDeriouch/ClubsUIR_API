@@ -40,6 +40,7 @@ public class DocumentModel {
     private ReferentAcademiqueModel referent;
 
     @ManyToOne(optional = true)
+    @JoinColumn(name = "admin_model_id")
     private AdminModel adminModel ;
 /*
     @ManyToMany

@@ -41,9 +41,9 @@ public class DocumentController {
     public static String fn, ft;
 
     @CrossOrigin(origins = "*")
-    @PostMapping(value = "/upload/file/referent/", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/upload/file/user/", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<DocumentModel> uploadDocument(@RequestPart(value = "file") MultipartFile file,
-                                                        @RequestParam int idReferent,
+                                                        @RequestParam String userEmail,
                                                         @RequestParam String libelle) {
         try {
             System.out.println("Filename = " + file.getOriginalFilename() + "filetype= " + file.getContentType());
@@ -53,7 +53,7 @@ public class DocumentController {
             new ResponseData(file.getOriginalFilename(), downloadURl, file.getContentType(), file.getSize());
             System.out.println("Uploaded the file successfully: " + file.getOriginalFilename());
 
-            return new ResponseEntity<>(documentService.uploadFile(file,idReferent, libelle), HttpStatus.OK);
+            return new ResponseEntity<>(documentService.uploadFile(file,userEmail, libelle), HttpStatus.OK);
         } catch (FileSystemException e) {
             throw new RuntimeException(e);
         } catch (Exception exception) {

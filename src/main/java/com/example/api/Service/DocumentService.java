@@ -1,8 +1,10 @@
 package com.example.api.Service;
 
+import com.example.api.Models.AdminModel;
 import com.example.api.Models.ClubModel;
 import com.example.api.Models.DocumentModel;
 import com.example.api.Models.ReferentAcademiqueModel;
+import com.example.api.Repository.AdminRepository;
 import com.example.api.Repository.ClubRepository;
 import com.example.api.Repository.DocumentRepository;
 import com.example.api.Repository.ReferentAcademiqueRepository;
@@ -42,9 +44,10 @@ public class DocumentService {
     private ClubRepository clubRepository;
     @Autowired
     private ReferentAcademiqueRepository referentRepository;
+    @Autowired private AdminRepository adminRepository;
 
     @Transactional
-    public DocumentModel uploadFile(MultipartFile file, int idReferent, String libelle) throws FileSystemException {
+    public DocumentModel uploadFile(MultipartFile file, String userEmail ,String libelle) throws FileSystemException {
         DocumentModel document = new DocumentModel();
         try {
             String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
@@ -60,18 +63,22 @@ public class DocumentService {
             document.setFileName(fileName);
             document.setFileType(fileType);
             document.setFile(file.getBytes());
-            Optional<ReferentAcademiqueModel> ref = referentRepository.findById(idReferent);
-            if (ref.isPresent())
+
+            Optional<ReferentAcademiqueModel> ref = Optional.ofNullable(referentRepository.findByEmail(userEmail));
+            Optional<AdminModel> admin = Optional.ofNullable(adminRepository.findByEmail(userEmail));
+
+            if (ref.isPresent() && userEmail.equals(ref.get().getEmail())) {
                 document.setReferent(ref.get());
+            } else if (admin.isPresent() && userEmail.equals(admin.get().getEmail())) {
+                document.setAdminModel(admin.get());
+            }
+
             document.setLibelle(libelle);
             //document.setClubList(document.getClubList());
         } catch (IOException e) {
             System.out.println("IO EXCEPTION");
             throw new RuntimeException(e);
-        } catch (Exception e) {
-            if (e instanceof FileAlreadyExistsException) {
-                throw new RuntimeException("A file of that name already exists.");
-            }
+        } catch (Exception ex) {
         }
         document = documentRepository.save(document);
         return modelMapper.map((Object) document, (Type) DocumentModel.class);
