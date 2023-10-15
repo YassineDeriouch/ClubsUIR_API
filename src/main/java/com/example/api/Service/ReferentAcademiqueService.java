@@ -1,8 +1,6 @@
 package com.example.api.Service;
 
-import com.example.api.Models.ClubModel;
-import com.example.api.Models.EtudiantModel;
-import com.example.api.Models.ReferentAcademiqueModel;
+import com.example.api.Models.*;
 import com.example.api.Models.ReferentAcademiqueModel;
 import com.example.api.Repository.ReferentAcademiqueRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -159,5 +155,46 @@ public class ReferentAcademiqueService {
             throw new EntityNotFoundException("this referent does not exist !");
         }
     }
+
+    public Map<String, List<EtudiantModel>> GetParticipantsInMeetingsByClubReferent(int idReferent) {
+        Optional<ReferentAcademiqueModel> opt_ref = referentRepository.findById(idReferent);
+        Map<String, List<EtudiantModel>> clubStudentsMap = new HashMap<>();
+
+        if (opt_ref.isPresent()) {
+            ReferentAcademiqueModel ref = opt_ref.get();
+
+            for (ClubModel club : ref.getClubModelList()) {
+                List<EtudiantModel> etudiants = new ArrayList<>();
+                for (ReunionModel reunion : club.getReunionModel()) {
+                    for (ClubModel subClub : reunion.getListClubs()) {
+                        etudiants.addAll(subClub.getEtudiantModelList());
+                    }
+                }
+                clubStudentsMap.put(club.getLibelle(), etudiants);
+            }
+        } else {
+            throw new EntityNotFoundException("This referent does not exist!");
+        }
+
+        return clubStudentsMap;
+    }
+
+    public List<ReunionModel> ListReunionsOfHisClub(int idReferent) {
+        Optional<ReferentAcademiqueModel> optref = referentRepository.findById(idReferent);
+
+        if (optref.isPresent()) {
+            ReferentAcademiqueModel ref = optref.get();
+            List<ReunionModel> reunions = new ArrayList<>();
+            for (ClubModel club : ref.getClubModelList()) {
+                reunions.addAll(club.getReunionModel());
+            }
+            return reunions;
+        } else {
+            throw new EntityNotFoundException("this referent does not exist !");
+        }
+    }
+
+
+
 
 }

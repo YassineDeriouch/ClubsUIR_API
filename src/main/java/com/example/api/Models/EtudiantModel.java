@@ -38,12 +38,4 @@ public class EtudiantModel {
             inverseJoinColumns = @JoinColumn(name = "id_club"))
     private List<ClubModel> clubModelList;
 
-    //Relation Many to many(Many etudiant have many reunion)
-    @JsonIgnore
-    @ManyToMany
-    @JoinTable(name = "reunion_etudiant_associations",
-            joinColumns = @JoinColumn(name = "id_etudiant"),
-            inverseJoinColumns = @JoinColumn(name = "id_reunion"))
-    private List<ReunionModel> reunionModelList;
-
 }

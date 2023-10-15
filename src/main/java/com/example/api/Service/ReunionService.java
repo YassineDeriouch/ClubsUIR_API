@@ -1,13 +1,17 @@
 package com.example.api.Service;
 
+import com.example.api.Models.ClubModel;
+import com.example.api.Models.EtudiantModel;
 import com.example.api.Models.ReunionModel;
 import com.example.api.Repository.ReunionRepository;
+import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,18 +31,50 @@ public class ReunionService {
 
     @Autowired private ModelMapper modelMapper;
 
+    @Autowired private EmailsService emailsService;
+
+    @Autowired private ClubService clubService;
+
+    private List<String> getMemberEmails(ClubModel club) {
+        List<String> memberEmails = new ArrayList<>();
+        for (EtudiantModel etudiant : clubService.getStudentsInClub(club.getId_club())) {
+            String email = etudiant.getEmail();
+            if (email != null && !email.isEmpty()) {
+                memberEmails.add(email);
+            }
+        }
+        return memberEmails;
+    }
+    private void sendEmailsToClubMembers(ReunionModel Reunion) {
+        for (ClubModel club : GetReunionById(Reunion.getId_reunion()).getListClubs()) {
+            List<String> memberEmails = getMemberEmails(club);
+            if (!memberEmails.isEmpty()) {
+                String meetingName = Reunion.getNom_reunion();
+                try {
+                    emailsService.sendMeetingCreatedEmailToMembers(memberEmails, meetingName);
+                } catch (MessagingException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     //Save Reunion
     @Transactional
-    public ReunionModel SaveReunion(ReunionModel reunionModel){
-        reunionModel.setId_reunion(reunionModel.getId_reunion());
-        reunionModel.setDate_reunion(reunionModel.getDate_reunion());
-        reunionModel.setLieu_reunion(reunionModel.getLieu_reunion());
-        reunionModel.setListClubs(reunionModel.getListClubs());
-        reunionModel.setListEtudiants(reunionModel.getListEtudiants());
-        ReunionModel SavedReunion=reunionRepository.save(reunionModel);
-        return modelMapper.map(SavedReunion,ReunionModel.class);
+    public ReunionModel SaveReunion(ReunionModel reunionModel) {
+        ReunionModel savedReunion;
+        try {
+            savedReunion = reunionRepository.save(reunionModel);
+            // Send emails to the meeting members
+            sendEmailsToClubMembers(savedReunion);
+            return modelMapper.map(savedReunion, ReunionModel.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalStateException("An error occurred while saving the reunion.");
+        }
     }
-    
+
+
     //Update Reunion
     @Transactional
     public ReunionModel UpdateReunion(ReunionModel reunionModel, int id) {
@@ -74,7 +110,6 @@ public class ReunionService {
         List<ReunionModel> reunionModelList = reunionRepository.findAll();
         for (ReunionModel reunionModel : reunionModelList) {
             reunionModel.getListClubs().size();// charge explicitement la relation
-            reunionModel.getListEtudiants().size();// charge explicitement la relation
         }
         if (!reunionModelList.isEmpty()) {
             reunionRepository.deleteAll();
@@ -107,6 +142,23 @@ public class ReunionService {
         } else {
             System.out.println("there is no reunions !!");
             return null;
+        }
+    }
+
+    public List<EtudiantModel> GetParticipantsByReunion(int idReunion){
+        Optional<ReunionModel> otpReunion = reunionRepository.findById(idReunion);
+        if(otpReunion.isPresent()){
+            ReunionModel reunion=otpReunion.get();
+            List<EtudiantModel> etudiants=new ArrayList<>();
+            for(ClubModel club :reunion.getListClubs()){
+                for(EtudiantModel etudiant :club.getEtudiantModelList()){
+                    etudiants.add(etudiant);
+                }
+            }
+                return etudiants;
+            }
+        else{
+            throw new EntityNotFoundException("this reunion does not exist !!");
         }
     }
 

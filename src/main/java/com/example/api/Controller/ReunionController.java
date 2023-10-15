@@ -1,6 +1,7 @@
 package com.example.api.Controller;
 
 import com.example.api.Models.ClubModel;
+import com.example.api.Models.EtudiantModel;
 import com.example.api.Models.ReunionModel;
 import com.example.api.Service.ReunionService;
 import jakarta.persistence.EntityNotFoundException;
@@ -94,5 +95,14 @@ public class ReunionController {
         }
     }
 
+    @GetMapping("/get/participants/reunion")
+    public ResponseEntity<List<EtudiantModel>> GetParticipantsInMeeting(@RequestParam int idReunion){
+        try{
+            return new ResponseEntity<>(reunionService.GetParticipantsByReunion(idReunion), HttpStatus.OK);
+        }catch (Exception e){
+            e.getMessage();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

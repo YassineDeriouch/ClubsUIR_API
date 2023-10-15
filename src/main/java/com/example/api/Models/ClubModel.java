@@ -51,14 +51,13 @@
                 inverseJoinColumns = @JoinColumn(name = "id_document"))
         private List<DocumentModel> documentModelList;
 
-        ///////////////////////
         @ToStringExclude
         @JsonIgnore
-        @ManyToOne(fetch = FetchType.EAGER)
-       /* @JoinTable(name = "club_reunion_association",
+        @ManyToMany(fetch = FetchType.EAGER)
+        @JoinTable(name = "club_reunion_association",
                 joinColumns = @JoinColumn(name = "id_club"),
-                inverseJoinColumns = @JoinColumn(name = "id_reunion", referencedColumnName = "id_reunion"))*/
-        private ReunionModel reunionModel;
+                inverseJoinColumns = @JoinColumn(name = "id_reunion", referencedColumnName = "id_reunion"))
+        private List<ReunionModel> reunionModel;
 
 
 

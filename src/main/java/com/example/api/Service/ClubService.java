@@ -58,7 +58,7 @@ public class ClubService {
             ClubModel existingClub = clubModelOptional.get();
             List<EtudiantModel> originalEtudiantList = existingClub.getEtudiantModelList(); // Store the original list
             List<DocumentModel> originalDocumentList = existingClub.getDocumentModelList();
-            ReunionModel originalReunion = existingClub.getReunionModel();
+            List<ReunionModel> Reunions = existingClub.getReunionModel();
 
             existingClub.setLibelle(clubModel.getLibelle());
             existingClub.setType(clubModel.getType());
@@ -66,7 +66,7 @@ public class ClubService {
 
             // Set the etudiantModelList back to its original value
             existingClub.setEtudiantModelList(originalEtudiantList);
-            existingClub.setReunionModel(originalReunion);
+            existingClub.setReunionModel(Reunions);
             existingClub.setDocumentModelList(originalDocumentList);
 
             ClubModel updated = clubRepository.save(existingClub);

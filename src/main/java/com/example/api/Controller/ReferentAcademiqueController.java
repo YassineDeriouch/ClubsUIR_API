@@ -2,6 +2,7 @@ package com.example.api.Controller;
 
 import com.example.api.Models.EtudiantModel;
 import com.example.api.Models.ReferentAcademiqueModel;
+import com.example.api.Models.ReunionModel;
 import com.example.api.Models.RoleModel;
 import com.example.api.Service.ReferentAcademiqueService;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Yassine
@@ -112,6 +114,26 @@ public class ReferentAcademiqueController {
     public ResponseEntity<List<EtudiantModel>> getReferentsByClub(@RequestParam int idRef){
         try{
             return new ResponseEntity<>(referentService.ListStudentsInHisClub(idRef), HttpStatus.OK);
+        }catch (EntityNotFoundException exception){
+            exception.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("list/students/meeting/referent")
+    public ResponseEntity<Map<String,List<EtudiantModel>>> GetParticipantInMeetingByClubReferent(int idReferent){
+        try {
+            return new ResponseEntity<>(referentService.GetParticipantsInMeetingsByClubReferent(idReferent), HttpStatus.OK);
+        }
+        catch (EntityNotFoundException exception){
+            exception.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @GetMapping("/get/reunions/club/referent")
+    public ResponseEntity<List<ReunionModel>> GetListReunionsOfClubRef(@RequestParam int idRef){
+        try{
+            return new ResponseEntity<>(referentService.ListReunionsOfHisClub(idRef), HttpStatus.OK);
         }catch (EntityNotFoundException exception){
             exception.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

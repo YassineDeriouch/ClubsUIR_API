@@ -47,18 +47,18 @@ public class ReunionModel {
 
     /////////////////
     @ToStringExclude
-    @OneToMany
+    @ManyToMany
     @JoinTable(name = "club_reunion_association",
             joinColumns = @JoinColumn(name = "id_reunion"),
             inverseJoinColumns = @JoinColumn(name = "id_club", referencedColumnName = "id_club"))
     private List<ClubModel> ListClubs;
 
-    @ToStringExclude
+   /* @ToStringExclude
     @ManyToMany
     @JoinTable(name = "reunion_etudiant_associations",
             joinColumns = @JoinColumn(name = "id_reunion"),
             inverseJoinColumns = @JoinColumn(name = "id_etudiant"))
-    private List<EtudiantModel> ListEtudiants;
+    private List<EtudiantModel> ListEtudiants;*/
 
 
 }
