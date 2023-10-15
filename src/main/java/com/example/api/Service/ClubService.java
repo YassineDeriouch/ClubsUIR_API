@@ -3,6 +3,7 @@ package com.example.api.Service;
 import com.example.api.Models.*;
 import com.example.api.Repository.ClubRepository;
 import com.example.api.Repository.EtudiantRepository;
+import com.example.api.Repository.ReferentAcademiqueRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 import org.hibernate.Hibernate;
@@ -211,7 +212,7 @@ public class ClubService {
         return clubRepository.findClubModelByStatut(clubStatut).stream().map(element -> modelMapper.map(element, ClubModel.class))
                 .collect(Collectors.toList());
     }
-
+    //filter accepted clubs list where the user doesn't exist for a user to integer a new club 
     @Transactional
     public List<ClubModel> getClubsAccepteWhereUserNotExists(int idEtudiant) throws EntityNotFoundException {
         return clubRepository.findClubsByStatutWhereUserDoesNotExist(idEtudiant).stream().map(element -> modelMapper.map(element, ClubModel.class))
@@ -267,6 +268,18 @@ public class ClubService {
             return count;
         }else {
             throw new EntityNotFoundException("club not found");
+        }
+    }
+        @Autowired private ReferentAcademiqueRepository referentRepository;
+
+    public List<ClubModel> getClubListByReferent(int idReferent) {
+        Optional<ReferentAcademiqueModel> optionalReferent = referentRepository.findById(idReferent);
+
+        if (optionalReferent.isPresent()) {
+            ReferentAcademiqueModel referent = optionalReferent.get();
+            return referent.getClubModelList();
+        } else {
+            throw new EntityNotFoundException("this referent does not exist !"+ idReferent);
         }
     }
 

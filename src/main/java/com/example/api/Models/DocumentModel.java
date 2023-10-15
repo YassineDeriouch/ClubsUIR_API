@@ -42,14 +42,14 @@ public class DocumentModel {
     @ManyToOne(optional = true)
     @JoinColumn(name = "admin_model_id")
     private AdminModel adminModel ;
-/*
-    @ManyToMany
+
+    @ManyToOne
     @JoinTable(
             name = "document_club",
             joinColumns = @JoinColumn(name = "document_id"),
             inverseJoinColumns = @JoinColumn(name = "club_id"))
-    private List<ClubModel> clubList;
- */
+    private ClubModel club;
+
 
 
 

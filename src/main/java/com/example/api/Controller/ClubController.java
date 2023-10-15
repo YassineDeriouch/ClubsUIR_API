@@ -266,4 +266,15 @@ public class ClubController {
         }
     }
 
+    @GetMapping(value = "/get/clubList/byReferent={idReferent}")
+    public ResponseEntity<List<ClubModel>> getClubListByReferent(@PathVariable int idReferent){
+        try{
+            List<ClubModel> clubList= clubService.getClubListByReferent(idReferent);
+            return new ResponseEntity<>(clubList, HttpStatus.OK);
+        }catch (Exception exception){
+            exception.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

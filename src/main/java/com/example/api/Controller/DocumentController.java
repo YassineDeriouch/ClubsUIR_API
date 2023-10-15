@@ -1,5 +1,6 @@
 package com.example.api.Controller;
 
+import com.example.api.Models.ClubModel;
 import com.example.api.Models.DocumentModel;
 import com.example.api.Models.ResponseData;
 import com.example.api.Service.DocumentService;
@@ -44,7 +45,8 @@ public class DocumentController {
     @PostMapping(value = "/upload/file/user/", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<DocumentModel> uploadDocument(@RequestPart(value = "file") MultipartFile file,
                                                         @RequestParam String userEmail,
-                                                        @RequestParam String libelle) {
+                                                        @RequestParam String libelle,
+                                                        @RequestParam int selectedClubID) {
         try {
             System.out.println("Filename = " + file.getOriginalFilename() + "filetype= " + file.getContentType());
             String downloadURl = ServletUriComponentsBuilder.fromCurrentContextPath().path("/download/")
@@ -53,7 +55,7 @@ public class DocumentController {
             new ResponseData(file.getOriginalFilename(), downloadURl, file.getContentType(), file.getSize());
             System.out.println("Uploaded the file successfully: " + file.getOriginalFilename());
 
-            return new ResponseEntity<>(documentService.uploadFile(file,userEmail, libelle), HttpStatus.OK);
+            return new ResponseEntity<>(documentService.uploadFile(file, userEmail, libelle, selectedClubID), HttpStatus.OK);
         } catch (FileSystemException e) {
             throw new RuntimeException(e);
         } catch (Exception exception) {
@@ -101,6 +103,16 @@ public class DocumentController {
     public ResponseEntity<List<DocumentModel>> getAllFilesByCLUB(@RequestParam String clubName){
         try{
             return new ResponseEntity<>(documentService.getAllFilesByClubName(clubName), HttpStatus.OK);
+        }catch (EntityNotFoundException exception){
+            exception.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/get/files/club/byUser={idUser}")
+    public ResponseEntity<List<DocumentModel>> getDocumentsByUserClub(@PathVariable int idUser){
+        try{
+            return new ResponseEntity<>(documentService.getDocumentsByUserClub(idUser), HttpStatus.OK);
         }catch (EntityNotFoundException exception){
             exception.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

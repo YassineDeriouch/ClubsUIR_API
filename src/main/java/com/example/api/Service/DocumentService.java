@@ -1,13 +1,7 @@
 package com.example.api.Service;
 
-import com.example.api.Models.AdminModel;
-import com.example.api.Models.ClubModel;
-import com.example.api.Models.DocumentModel;
-import com.example.api.Models.ReferentAcademiqueModel;
-import com.example.api.Repository.AdminRepository;
-import com.example.api.Repository.ClubRepository;
-import com.example.api.Repository.DocumentRepository;
-import com.example.api.Repository.ReferentAcademiqueRepository;
+import com.example.api.Models.*;
+import com.example.api.Repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
@@ -46,8 +40,8 @@ public class DocumentService {
     private ReferentAcademiqueRepository referentRepository;
     @Autowired private AdminRepository adminRepository;
 
-    @Transactional
-    public DocumentModel uploadFile(MultipartFile file, String userEmail ,String libelle) throws FileSystemException {
+    @Transactional                                      // UuserEmail TO BE REPLACED BY USER ROLE
+    public DocumentModel uploadFile(MultipartFile file, String userEmail ,String libelle, int selectedClubID) throws FileSystemException {
         DocumentModel document = new DocumentModel();
         try {
             String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
@@ -66,9 +60,11 @@ public class DocumentService {
 
             Optional<ReferentAcademiqueModel> ref = Optional.ofNullable(referentRepository.findByEmail(userEmail));
             Optional<AdminModel> admin = Optional.ofNullable(adminRepository.findByEmail(userEmail));
+            Optional<ClubModel> club = clubRepository.findById(selectedClubID);
 
-            if (ref.isPresent() && userEmail.equals(ref.get().getEmail())) {
+            if (ref.isPresent() && userEmail.equals(ref.get().getEmail()) && club.isPresent()) {
                 document.setReferent(ref.get());
+                document.setClub(club.get());
             } else if (admin.isPresent() && userEmail.equals(admin.get().getEmail())) {
                 document.setAdminModel(admin.get());
             }
@@ -159,6 +155,31 @@ public class DocumentService {
             return modelMapper.map(document, DocumentModel.class);
         } else {
             throw new EntityNotFoundException("Document not found, id= " + id);
+        }
+    }
+
+    @Autowired private EtudiantRepository etudiantRepository;
+
+    public List<DocumentModel> getDocumentsByUserClub(int idUser) {
+        Optional<ReferentAcademiqueModel> optionalReferentID = referentRepository.findById(idUser);
+        Optional<EtudiantModel> optionalEtudiantID = etudiantRepository.findById(idUser);
+
+        if (optionalReferentID.isPresent()) {
+            ReferentAcademiqueModel ref = optionalReferentID.get();
+            List<DocumentModel> docs = new ArrayList<>();
+            for (ClubModel club : ref.getClubModelList()) {
+                docs.addAll(club.getDocumentModelList());
+            }
+            return docs;
+        } else if (optionalEtudiantID.isPresent()) {
+            EtudiantModel etd = optionalEtudiantID.get();
+            List<DocumentModel> docs = new ArrayList<>();
+            for (ClubModel club : etd.getClubModelList()) {
+                docs.addAll(club.getDocumentModelList());
+            }
+            return docs;
+        } else {
+            throw new EntityNotFoundException("this etd does not exist !");
         }
     }
 
