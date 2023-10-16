@@ -50,6 +50,13 @@ public class DocumentModel {
             inverseJoinColumns = @JoinColumn(name = "club_id"))
     private ClubModel club;
 
+    @ManyToOne
+    @JoinTable(
+            name = "document_etudiant",
+            joinColumns = @JoinColumn(name = "document_id"),
+            inverseJoinColumns = @JoinColumn(name = "etudiant_id"))
+    private EtudiantModel etudiant;
+
 
 
 

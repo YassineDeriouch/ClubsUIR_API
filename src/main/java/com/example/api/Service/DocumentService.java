@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileSystemException;
 import java.sql.Date;
 import java.text.DateFormat;
@@ -60,10 +59,15 @@ public class DocumentService {
 
             Optional<ReferentAcademiqueModel> ref = Optional.ofNullable(referentRepository.findByEmail(userEmail));
             Optional<AdminModel> admin = Optional.ofNullable(adminRepository.findByEmail(userEmail));
+            Optional<EtudiantModel> etudiant = Optional.ofNullable(etudiantRepository.findByEmail(userEmail));
             Optional<ClubModel> club = clubRepository.findById(selectedClubID);
 
             if (ref.isPresent() && userEmail.equals(ref.get().getEmail()) && club.isPresent()) {
                 document.setReferent(ref.get());
+                document.setClub(club.get());
+            }
+            if (etudiant.isPresent() && userEmail.equals(etudiant.get().getEmail()) && club.isPresent()) {
+                document.setEtudiant(etudiant.get());
                 document.setClub(club.get());
             } else if (admin.isPresent() && userEmail.equals(admin.get().getEmail())) {
                 document.setAdminModel(admin.get());
@@ -160,10 +164,23 @@ public class DocumentService {
 
     @Autowired private EtudiantRepository etudiantRepository;
 
-    public List<DocumentModel> getDocumentsByUserClub(int idUser) {
-        Optional<ReferentAcademiqueModel> optionalReferentID = referentRepository.findById(idUser);
-        Optional<EtudiantModel> optionalEtudiantID = etudiantRepository.findById(idUser);
+    public List<DocumentModel> getDocumentsByEtudiantClub(int idEtudiant) {
+        Optional<EtudiantModel> optionalEtudiantID = etudiantRepository.findById(idEtudiant);
 
+        if (optionalEtudiantID.isPresent()) {
+            EtudiantModel etd = optionalEtudiantID.get();
+            List<DocumentModel> docs = new ArrayList<>();
+            for (ClubModel club : etd.getClubModelList()) {
+                docs.addAll(club.getDocumentModelList());
+            }
+            return docs;
+        }
+        throw new EntityNotFoundException("User exists but doesn't have the expected role.");
+    }
+
+
+    public List<DocumentModel> getDocumentsByReferentClub(int idReferent){
+        Optional<ReferentAcademiqueModel> optionalReferentID = referentRepository.findById(idReferent);
         if (optionalReferentID.isPresent()) {
             ReferentAcademiqueModel ref = optionalReferentID.get();
             List<DocumentModel> docs = new ArrayList<>();
@@ -171,17 +188,49 @@ public class DocumentService {
                 docs.addAll(club.getDocumentModelList());
             }
             return docs;
-        } else if (optionalEtudiantID.isPresent()) {
+        }else{
+            System.out.println("No matching referent");
+            throw new EntityNotFoundException("referent doesnt exists");
+        }
+
+    }
+
+
+/*
+    public List<DocumentModel> getDocumentsByUserClub(int idUser, String role) {
+        Optional<ReferentAcademiqueModel> optionalReferentID = referentRepository.findById(idUser);
+        Optional<EtudiantModel> optionalEtudiantID = etudiantRepository.findById(idUser);
+
+        if (optionalEtudiantID.isPresent()) {
             EtudiantModel etd = optionalEtudiantID.get();
+            if (etd.getFkrole() != null) {
+                String etdRole = etd.getFkrole().getLibelle();
+
+                if (etdRole.equals(role)) {
+                    List<DocumentModel> docs = new ArrayList<>();
+                    for (ClubModel club : etd.getClubModelList()) {
+                        docs.addAll(club.getDocumentModelList());
+                    }
+                    return docs;
+                }
+            }
+        }
+
+        if (optionalReferentID.isPresent() && role == null) {
+            ReferentAcademiqueModel ref = optionalReferentID.get();
             List<DocumentModel> docs = new ArrayList<>();
-            for (ClubModel club : etd.getClubModelList()) {
+            for (ClubModel club : ref.getClubModelList()) {
                 docs.addAll(club.getDocumentModelList());
             }
             return docs;
-        } else {
-            throw new EntityNotFoundException("this etd does not exist !");
         }
+
+        // Use a logger for better logging in production.
+        System.out.println("No matching user or role.");
+        throw new EntityNotFoundException("User exists but doesn't have the expected role.");
     }
+*/
+
 
 
 }

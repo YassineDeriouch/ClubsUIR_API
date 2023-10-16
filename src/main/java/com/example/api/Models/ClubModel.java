@@ -46,9 +46,9 @@
         @ToStringExclude
         @JsonIgnore
         @OneToMany
-        @JoinTable(name = "club_document_associations",
-                joinColumns = @JoinColumn(name = "id_club"),
-                inverseJoinColumns = @JoinColumn(name = "id_document"))
+        @JoinTable(name = "document_club",
+                joinColumns = @JoinColumn(name = "club_id"),
+                inverseJoinColumns = @JoinColumn(name = "document_id"))
         private List<DocumentModel> documentModelList;
 
         @ToStringExclude

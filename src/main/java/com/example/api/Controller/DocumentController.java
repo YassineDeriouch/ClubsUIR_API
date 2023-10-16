@@ -5,6 +5,7 @@ import com.example.api.Models.DocumentModel;
 import com.example.api.Models.ResponseData;
 import com.example.api.Service.DocumentService;
 
+import io.swagger.annotations.ApiParam;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,15 +110,33 @@ public class DocumentController {
         }
     }
 
-    @GetMapping("/get/files/club/byUser={idUser}")
-    public ResponseEntity<List<DocumentModel>> getDocumentsByUserClub(@PathVariable int idUser){
+    @GetMapping("/get/files/club/byEtudiant={idEtudiant}")
+    public ResponseEntity<List<DocumentModel>> getDocumentsByEtudiantClub(@PathVariable int idEtudiant){
         try{
-            return new ResponseEntity<>(documentService.getDocumentsByUserClub(idUser), HttpStatus.OK);
+            return new ResponseEntity<>(documentService.getDocumentsByEtudiantClub(idEtudiant), HttpStatus.OK);
         }catch (EntityNotFoundException exception){
             exception.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping("/get/files/club/byReferent={idReferent}")
+    public ResponseEntity<List<DocumentModel>> getDocumentsByReferentClub(@PathVariable int idReferent ){
+        try{
+            return new ResponseEntity<>(documentService.getDocumentsByReferentClub(idReferent), HttpStatus.OK);
+        }catch (EntityNotFoundException exception){
+            exception.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+/*@GetMapping("/get/files/club/byUser={idUser}&role={role}")
+    public ResponseEntity<List<DocumentModel>> getDocumentsByUserClub(@PathVariable int idUser ,@PathVariable(required = false) String role ){
+        try{
+            return new ResponseEntity<>(documentService.getDocumentsByUserClub(idUser,role), HttpStatus.OK);
+        }catch (EntityNotFoundException exception){
+            exception.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }*/
 
     @CrossOrigin(origins = "*")
     @DeleteMapping("/delete/id")

@@ -282,6 +282,16 @@ public class ClubService {
             throw new EntityNotFoundException("this referent does not exist !"+ idReferent);
         }
     }
+    public List<ClubModel> getClubListByEtudiant(int idEtudiant) {
+        Optional<EtudiantModel> optionalEtudiant = etudiantRepository.findById(idEtudiant);
+
+        if (optionalEtudiant.isPresent()) {
+            EtudiantModel etudiant = optionalEtudiant.get();
+            return etudiant.getClubModelList();
+        } else {
+            throw new EntityNotFoundException("this etudiant does not exist !"+ idEtudiant);
+        }
+    }
 
 
 
