@@ -1,11 +1,9 @@
 package com.example.api.Service;
 
-import com.example.api.Models.ClubModel;
-import com.example.api.Models.EtudiantModel;
-import com.example.api.Models.EvenementModel;
-import com.example.api.Models.EvenementStatut;
+import com.example.api.Models.*;
 import com.example.api.Repository.ClubRepository;
 import com.example.api.Repository.EvenementRepository;
+import com.example.api.Repository.ReferentAcademiqueRepository;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.pdf.*;
@@ -247,6 +245,25 @@ public class EvenementService {
             e.printStackTrace();
             throw new IllegalStateException("Error while creating event");
         }
+    }
+
+    @Autowired private ReferentAcademiqueRepository RefRepo;
+    public List<EvenementModel> getEventsByReferent(int idReferent){
+       List<EvenementModel>events=new ArrayList<>();
+
+       Optional<ReferentAcademiqueModel> opt_ref=RefRepo.findById(idReferent);
+       if(opt_ref.isPresent()) {
+           ReferentAcademiqueModel ref=opt_ref.get();
+           for (EvenementModel event : evenementRepository.findAll()) {
+               for (ClubModel club : event.getParticipants()) {
+                   if (club.getReferent().equals(ref)) {
+                       events.add(event);
+                   }
+               }
+           }
+           return events;
+       }
+       else throw new EntityNotFoundException("Referent not found ! id : " + idReferent);
     }
 
 }
