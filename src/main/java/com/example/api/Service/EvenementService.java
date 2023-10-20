@@ -1,6 +1,7 @@
 package com.example.api.Service;
 
 import com.example.api.Models.*;
+import com.example.api.Repository.AdminRepository;
 import com.example.api.Repository.ClubRepository;
 import com.example.api.Repository.EvenementRepository;
 import com.example.api.Repository.ReferentAcademiqueRepository;
@@ -37,11 +38,21 @@ public class EvenementService {
     public EvenementService(EvenementRepository evenementRepository) {
         this.evenementRepository = evenementRepository;
     }
+    @Autowired private ReferentAcademiqueRepository referentRepository;
+    @Autowired private AdminRepository adminRepository;
+
 
     //Send demand to create an event
     @Autowired private EtudiantService etudiantService;
     public EvenementModel EnvoyerDem(int idEtd, EvenementModel evenementModel){
         EtudiantModel etudiantModel= etudiantService.getStudentById(idEtd);
+        addEventHelper(evenementModel);
+        evenementModel.setStatut(EvenementStatut.en_attente);
+        EvenementModel evenement = evenementRepository.save(evenementModel);
+        return modelMapper.map(evenement, EvenementModel.class);
+    }
+
+    public void addEventHelper(EvenementModel evenementModel){
         evenementModel.setId_evenement(evenementModel.getId_evenement());
         evenementModel.setLibelle(evenementModel.getLibelle());
         evenementModel.setDate_debut(evenementModel.getDate_debut());
@@ -49,9 +60,14 @@ public class EvenementService {
         evenementModel.setType(evenementModel.getType());
         evenementModel.setBudget(evenementModel.getBudget());
         evenementModel.setParticipants(evenementModel.getParticipants());
-        evenementModel.setStatut(EvenementStatut.en_attente);
-        EvenementModel evenement = evenementRepository.save(evenementModel);
-        return modelMapper.map(evenement, EvenementModel.class);
+    }
+    public EvenementModel saveEvent(EvenementModel evenementModel,int selectedClubID){
+        Optional<ClubModel> club = clubRepository.findById(selectedClubID);
+            addEventHelper(evenementModel);
+            evenementModel.setParticipants(Collections.singletonList(club.get()));
+            evenementModel.setStatut(EvenementStatut.accepte);
+            EvenementModel evenement = evenementRepository.save(evenementModel);
+            return modelMapper.map(evenement, EvenementModel.class);
     }
 
     //Validate the creation of an event
@@ -248,22 +264,40 @@ public class EvenementService {
     }
 
     @Autowired private ReferentAcademiqueRepository RefRepo;
-    public List<EvenementModel> getEventsByReferent(int idReferent){
-       List<EvenementModel>events=new ArrayList<>();
+    /*public List<EvenementModel> getEventsByReferent(int idReferent) {
+        List<EvenementModel> events = new ArrayList<>();
 
-       Optional<ReferentAcademiqueModel> opt_ref=RefRepo.findById(idReferent);
-       if(opt_ref.isPresent()) {
-           ReferentAcademiqueModel ref=opt_ref.get();
-           for (EvenementModel event : evenementRepository.findAll()) {
-               for (ClubModel club : event.getParticipants()) {
-                   if (club.getReferent().equals(ref)) {
-                       events.add(event);
-                   }
-               }
-           }
-           return events;
-       }
-       else throw new EntityNotFoundException("Referent not found ! id : " + idReferent);
+        Optional<ReferentAcademiqueModel> opt_ref = RefRepo.findById(idReferent);
+        if (opt_ref.isPresent()) {
+            ReferentAcademiqueModel ref = opt_ref.get();
+            for (EvenementModel event : evenementRepository.findAll()) {
+                for (ClubModel club : event.getParticipants()) {
+                    ReferentAcademiqueModel clubReferent = club.getReferent();
+                    if (clubReferent != null && clubReferent.equals(ref)) {
+                        events.add(event);
+                    }
+                }
+            }
+            return events;
+        } else {
+            throw new EntityNotFoundException("Referent not found! id: " + idReferent);
+        }
+    }*/
+
+    public List<EvenementModel> getEventsByReferent(int idReferent) {
+        List<EvenementModel> events = new ArrayList<>();
+
+        Optional<ReferentAcademiqueModel> opt_ref = RefRepo.findById(idReferent);
+        if (opt_ref.isPresent()) {
+            List<ClubModel> clubModelList = opt_ref.get().getClubModelList();
+            for (ClubModel clubModel : clubModelList) {
+                events.addAll(clubModel.getEvenementList());
+            }
+        } else {
+            throw new EntityNotFoundException();
+        }
+        return events;
     }
+
 
 }

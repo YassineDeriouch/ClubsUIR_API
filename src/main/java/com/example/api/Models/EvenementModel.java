@@ -1,7 +1,10 @@
     package com.example.api.Models;
     import com.fasterxml.jackson.annotation.JsonIgnore;
+    import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+    import com.fasterxml.jackson.annotation.JsonManagedReference;
     import jakarta.persistence.*;
     import lombok.Data;
+    import lombok.ToString;
 
     import java.sql.Date;
     import java.util.List;
@@ -29,7 +32,10 @@
         private EvenementStatut statut;
 
         // Relation with EtudiantModel (1,n) : 1 evenement can have many participants
-        @OneToMany(fetch = FetchType.EAGER)
+        //@JsonManagedReference
+        @JsonIgnoreProperties("evenementList")
+        @ToString.Exclude
+        @ManyToMany(fetch = FetchType.EAGER)
         @JoinTable(name = "evenement_Club_association",
                 joinColumns = @JoinColumn(name = "id_evenement"),
                 inverseJoinColumns = @JoinColumn(name = "id_club"))

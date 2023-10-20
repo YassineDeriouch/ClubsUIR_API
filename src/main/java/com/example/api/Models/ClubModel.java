@@ -1,6 +1,8 @@
     package com.example.api.Models;
 
+    import com.fasterxml.jackson.annotation.JsonBackReference;
     import com.fasterxml.jackson.annotation.JsonIgnore;
+    import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
     import jakarta.persistence.*;
     import lombok.Data;
     import lombok.ToString;
@@ -60,5 +62,12 @@
         private List<ReunionModel> reunionModel;
 
 
+        //@JsonBackReference
+        @JsonIgnoreProperties("participants")
+        @ManyToMany(fetch = FetchType.EAGER)
+        @JoinTable(name = "evenement_Club_association",
+                joinColumns = @JoinColumn(name = "id_club"),
+                inverseJoinColumns = @JoinColumn(name = "id_evenement"))
+        private List<EvenementModel> evenementList;
 
     }

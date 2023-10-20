@@ -1,9 +1,6 @@
 package com.example.api.Controller;
 
-import com.example.api.Models.ClubModel;
-import com.example.api.Models.EtudiantModel;
-import com.example.api.Models.EvenementModel;
-import com.example.api.Models.EvenementStatut;
+import com.example.api.Models.*;
 import com.example.api.Service.EvenementService;
 import com.lowagie.text.DocumentException;
 import jakarta.persistence.EntityNotFoundException;
@@ -30,7 +27,6 @@ public class EvenementController {
     @Autowired private EvenementService evenementService;
 
     //Envoi de la demande de création d'un événement
-    @CrossOrigin
     @PostMapping(value = "/SendDemand")
     public ResponseEntity<EvenementModel> SendDemand(@RequestParam int idEtd, @RequestBody  EvenementModel evenementModel){
         try{
@@ -42,8 +38,18 @@ public class EvenementController {
         }
     }
 
+    @PostMapping(value = "/saveEvent/club={selectedClubID}")
+    public ResponseEntity<EvenementModel> saveEvent(@RequestBody  EvenementModel evenementModel, @PathVariable int selectedClubID){
+        try{
+        EvenementModel evenement=evenementService.saveEvent(evenementModel,selectedClubID);
+        return new ResponseEntity<>(evenement, HttpStatus.OK);
+    }catch (EntityNotFoundException exception){
+            exception.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     //Validation de la création d'un événement
-    @CrossOrigin
     @PutMapping(value = "/ValiderCreationEvent")
     public ResponseEntity<EvenementModel> ValiderCreationEvent(@RequestParam int idEvenement) {
         try {
@@ -56,7 +62,7 @@ public class EvenementController {
     }
 
     //Récupération de la liste des événements par statut
-    @CrossOrigin
+
     @GetMapping(value = "/GetEventByStatut")
     public ResponseEntity<List<EvenementModel>> GetEventByStatut(@RequestParam EvenementStatut statut) {
         try{
@@ -69,7 +75,7 @@ public class EvenementController {
     }
 
     //Récupération de la liste de tous les événements
-    @CrossOrigin
+
     @GetMapping(value = "/GetAllEvent")
     public ResponseEntity<List<EvenementModel>> GetAllEvent() {
         try {
@@ -83,7 +89,7 @@ public class EvenementController {
 
     //Confirmation de la participation d'un club à un événement
 
-    @CrossOrigin
+
     @PostMapping(value = "/ConfirmParticipationClub_Event")
     public ResponseEntity<EvenementModel> ConfirmerParticipationClub_Event(@RequestParam int idClub,@RequestParam int idEvenement){
         try{
@@ -97,7 +103,7 @@ public class EvenementController {
     }
 
     //Récuperer les participants d'un événement
-    @CrossOrigin
+
     @GetMapping(value = "/GetParticipants_Club_Event")
     public ResponseEntity<List<EtudiantModel>>getEtudiantsParticipating(@RequestParam int idEvenement){
         try{
@@ -110,7 +116,7 @@ public class EvenementController {
         }
     }
 
-    @CrossOrigin
+
     @GetMapping(value = "/get/libelle")
     public ResponseEntity<EvenementModel> getEventByLibelle(@RequestParam String eventLibelle){
         try {
@@ -127,7 +133,7 @@ public class EvenementController {
      * @param clubName
      * @return
      */
-    @CrossOrigin
+
     @GetMapping("/countEvents/club")
     public ResponseEntity<Integer> countEventsByClub(String clubName){
         try {
@@ -168,7 +174,17 @@ public class EvenementController {
         }
     }
 
-    @GetMapping("/get/Event/By/Referent")
+    @GetMapping("/get/events/By/Referent={idReferent}")
+    public ResponseEntity<List<EvenementModel>> getEventsByReferent(@PathVariable int idReferent){
+        try {
+            return new ResponseEntity<>(evenementService.getEventsByReferent(idReferent),HttpStatus.OK);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /*@GetMapping("/get/Event/By/Referent")
     public ResponseEntity<List<EvenementModel>> getEventsByReferent(@RequestParam int idReferent){
         try {
             return new ResponseEntity<>(evenementService.getEventsByReferent(idReferent), HttpStatus.OK);
@@ -176,7 +192,6 @@ public class EvenementController {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
+    }*/
 
 }

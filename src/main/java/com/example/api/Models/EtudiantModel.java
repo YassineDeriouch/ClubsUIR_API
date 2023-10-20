@@ -27,11 +27,13 @@ public class EtudiantModel {
     private String telephone;
 
     //Relation Many to one(Many etudiant have one role)
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name="idRole")
     private RoleModel fkrole;
 
     //Relation Many to many(Many etudiant have many club)
+    @ToString.Exclude
     @ManyToMany
     @JoinTable(name = "club_etudiant_associations",
             joinColumns = @JoinColumn(name = "id_etudiant"),
