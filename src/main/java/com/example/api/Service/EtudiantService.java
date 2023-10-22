@@ -157,5 +157,26 @@ public class EtudiantService {
         }
     }
 
+    public List<ReunionModel> GetReunionByPresidentClubs(int idEtd){
+        Optional<EtudiantModel>opt_etd=etudiantRepository.findById(idEtd);
+        List<ReunionModel> reunionModelList=new ArrayList<>();
+        if(opt_etd.isPresent()){
+            EtudiantModel etd=opt_etd.get();
+            if(etd.getFkrole().getLibelle().equals("president")){
+               for(ClubModel c:etd.getClubModelList()){
+                        reunionModelList.addAll(c.getReunionModel());
+                    }
+                    return reunionModelList;
+            }
+            else {
+                throw new IllegalStateException("You are not a president");
+            }
+        }
+        else {
+            throw new IllegalStateException("Error");
+        }
+    }
+
+
 
 }

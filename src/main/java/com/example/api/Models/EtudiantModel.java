@@ -40,4 +40,12 @@ public class EtudiantModel {
             inverseJoinColumns = @JoinColumn(name = "id_club"))
     private List<ClubModel> clubModelList;
 
+    //mappedBy = "etudiant" : c'est le nom de l'attribut etudiant dans la classe DemandeModel
+    //il permet de faire le lien entre les deux classes
+    //cascade = CascadeType.ALL : permet de faire les opérations de base sur la table DemandeModel
+    @JsonIgnore
+    @OneToMany(mappedBy = "etudiant", cascade = CascadeType.ALL)
+    private List<DemandeModel> demandes;
+
+
 }

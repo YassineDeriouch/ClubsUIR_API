@@ -183,15 +183,15 @@ public class EvenementController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    /*@GetMapping("/get/Event/By/Referent")
-    public ResponseEntity<List<EvenementModel>> getEventsByReferent(@RequestParam int idReferent){
+    @GetMapping("/get/events/By/Etudiant")
+    public ResponseEntity<List<EvenementModel>> getEventsByEtudiant(@RequestParam int idEtd){
         try {
-            return new ResponseEntity<>(evenementService.getEventsByReferent(idReferent), HttpStatus.OK);
-        }catch (Exception e){
+            return new ResponseEntity<>(evenementService.getEventsByEtudiant(idEtd),HttpStatus.OK);
+        }catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }*/
+    }
+
 
 }

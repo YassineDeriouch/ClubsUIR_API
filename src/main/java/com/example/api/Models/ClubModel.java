@@ -70,4 +70,8 @@
                 inverseJoinColumns = @JoinColumn(name = "id_evenement"))
         private List<EvenementModel> evenementList;
 
+        @JsonIgnore
+        @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+        private List<DemandeModel> demandes;
+
     }

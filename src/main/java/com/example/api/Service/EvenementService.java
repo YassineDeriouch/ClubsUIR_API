@@ -1,10 +1,7 @@
 package com.example.api.Service;
 
 import com.example.api.Models.*;
-import com.example.api.Repository.AdminRepository;
-import com.example.api.Repository.ClubRepository;
-import com.example.api.Repository.EvenementRepository;
-import com.example.api.Repository.ReferentAcademiqueRepository;
+import com.example.api.Repository.*;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.pdf.*;
@@ -290,6 +287,22 @@ public class EvenementService {
         Optional<ReferentAcademiqueModel> opt_ref = RefRepo.findById(idReferent);
         if (opt_ref.isPresent()) {
             List<ClubModel> clubModelList = opt_ref.get().getClubModelList();
+            for (ClubModel clubModel : clubModelList) {
+                events.addAll(clubModel.getEvenementList());
+            }
+        } else {
+            throw new EntityNotFoundException();
+        }
+        return events;
+    }
+
+    @Autowired private EtudiantRepository eRepo;
+    public List<EvenementModel> getEventsByEtudiant(int idEtd) {
+        List<EvenementModel> events = new ArrayList<>();
+
+        Optional<EtudiantModel> opt_etd = eRepo.findById(idEtd);
+        if (opt_etd.isPresent()) {
+            List<ClubModel> clubModelList = opt_etd.get().getClubModelList();
             for (ClubModel clubModel : clubModelList) {
                 events.addAll(clubModel.getEvenementList());
             }

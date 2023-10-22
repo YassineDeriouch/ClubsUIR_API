@@ -2,6 +2,7 @@ package com.example.api.Controller;
 
 import com.example.api.Models.ClubModel;
 import com.example.api.Models.EtudiantModel;
+import com.example.api.Models.ReunionModel;
 import com.example.api.Service.ClubService;
 import com.example.api.Service.EtudiantService;
 import jakarta.persistence.Column;
@@ -108,6 +109,15 @@ public class EtudiantController {
     public ResponseEntity<Map<String, List<EtudiantModel>>> getListofParticipantOfHisClub(@RequestParam int idStudent){
         try{
             return new ResponseEntity<>(etudiantService.ListParticipantOfHisClub(idStudent), HttpStatus.OK);
+        }catch (EntityNotFoundException exception){
+            exception.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping("list/reunion/of/PresidentClubs")
+    public ResponseEntity<List<ReunionModel>> GetReunionByPresidentClubs(@RequestParam int idEtd){
+        try{
+            return new ResponseEntity<>(etudiantService.GetReunionByPresidentClubs(idEtd), HttpStatus.OK);
         }catch (EntityNotFoundException exception){
             exception.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
