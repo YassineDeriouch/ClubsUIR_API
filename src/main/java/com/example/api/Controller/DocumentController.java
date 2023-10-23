@@ -1,11 +1,9 @@
 package com.example.api.Controller;
 
-import com.example.api.Models.ClubModel;
 import com.example.api.Models.DocumentModel;
+import com.example.api.Models.DocumentsAdminResponseDTO;
 import com.example.api.Models.ResponseData;
 import com.example.api.Service.DocumentService;
-
-import io.swagger.annotations.ApiParam;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.print.Doc;
-import java.io.FileNotFoundException;
 import java.nio.file.FileSystemException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author Yassine
@@ -128,15 +121,10 @@ public class DocumentController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-/*@GetMapping("/get/files/club/byUser={idUser}&role={role}")
-    public ResponseEntity<List<DocumentModel>> getDocumentsByUserClub(@PathVariable int idUser ,@PathVariable(required = false) String role ){
-        try{
-            return new ResponseEntity<>(documentService.getDocumentsByUserClub(idUser,role), HttpStatus.OK);
-        }catch (EntityNotFoundException exception){
-            exception.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }*/
+    @GetMapping("/get/files/byAdmin")
+    public ResponseEntity<List<DocumentsAdminResponseDTO>> getDocumentsByAdmin() throws EntityNotFoundException{
+        return new ResponseEntity<>(documentService.getDocumentsByAdmin(), HttpStatus.OK);
+    }
 
     @CrossOrigin(origins = "*")
     @DeleteMapping("/delete/id")

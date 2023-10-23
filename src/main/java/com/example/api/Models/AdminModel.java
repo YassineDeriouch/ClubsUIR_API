@@ -1,7 +1,10 @@
     package com.example.api.Models;
 
+    import com.fasterxml.jackson.annotation.JsonBackReference;
     import jakarta.persistence.*;
     import lombok.Data;
+
+    import java.util.List;
 
     /**
      * @author Yassine Deriouch
@@ -26,4 +29,8 @@
         private String password;
         @Column(name="telephone")
         private String telephone;
+
+        @JsonBackReference
+        @OneToMany(mappedBy = "adminModel")
+        public List<DocumentModel> adminDocuments;
     }

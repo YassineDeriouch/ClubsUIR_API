@@ -96,13 +96,9 @@ public class ReunionController {
     }
 
     @GetMapping("/get/participants/reunion")
-    public ResponseEntity<List<EtudiantModel>> GetParticipantsInMeeting(@RequestParam int idReunion){
-        try{
+    public ResponseEntity<List<EtudiantModel>> GetParticipantsInMeeting(@RequestParam int idReunion) throws EntityNotFoundException{
+
             return new ResponseEntity<>(reunionService.GetParticipantsByReunion(idReunion), HttpStatus.OK);
-        }catch (Exception e){
-            e.getMessage();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 
 }

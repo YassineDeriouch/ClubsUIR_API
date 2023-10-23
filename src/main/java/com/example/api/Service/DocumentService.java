@@ -37,10 +37,11 @@ public class DocumentService {
     private ClubRepository clubRepository;
     @Autowired
     private ReferentAcademiqueRepository referentRepository;
-    @Autowired private AdminRepository adminRepository;
+    @Autowired
+    private AdminRepository adminRepository;
 
     @Transactional                                      // UuserEmail TO BE REPLACED BY USER ROLE
-    public DocumentModel uploadFile(MultipartFile file, String userEmail ,String libelle, int selectedClubID) throws FileSystemException {
+    public DocumentModel uploadFile(MultipartFile file, String userEmail, String libelle, int selectedClubID) throws FileSystemException {
         DocumentModel document = new DocumentModel();
         try {
             String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
@@ -162,7 +163,8 @@ public class DocumentService {
         }
     }
 
-    @Autowired private EtudiantRepository etudiantRepository;
+    @Autowired
+    private EtudiantRepository etudiantRepository;
 
     public List<DocumentModel> getDocumentsByEtudiantClub(int idEtudiant) {
         Optional<EtudiantModel> optionalEtudiantID = etudiantRepository.findById(idEtudiant);
@@ -179,7 +181,7 @@ public class DocumentService {
     }
 
 
-    public List<DocumentModel> getDocumentsByReferentClub(int idReferent){
+    public List<DocumentModel> getDocumentsByReferentClub(int idReferent) {
         Optional<ReferentAcademiqueModel> optionalReferentID = referentRepository.findById(idReferent);
         if (optionalReferentID.isPresent()) {
             ReferentAcademiqueModel ref = optionalReferentID.get();
@@ -188,48 +190,30 @@ public class DocumentService {
                 docs.addAll(club.getDocumentModelList());
             }
             return docs;
-        }else{
+        } else {
             System.out.println("No matching referent");
             throw new EntityNotFoundException("referent doesnt exists");
         }
-
     }
 
+    public List<DocumentsAdminResponseDTO> getDocumentsByAdmin() {
+        List<DocumentModel> documentModelList = documentRepository.findAll();
+        List<DocumentsAdminResponseDTO> docsList = new ArrayList<>();
 
-/*
-    public List<DocumentModel> getDocumentsByUserClub(int idUser, String role) {
-        Optional<ReferentAcademiqueModel> optionalReferentID = referentRepository.findById(idUser);
-        Optional<EtudiantModel> optionalEtudiantID = etudiantRepository.findById(idUser);
-
-        if (optionalEtudiantID.isPresent()) {
-            EtudiantModel etd = optionalEtudiantID.get();
-            if (etd.getFkrole() != null) {
-                String etdRole = etd.getFkrole().getLibelle();
-
-                if (etdRole.equals(role)) {
-                    List<DocumentModel> docs = new ArrayList<>();
-                    for (ClubModel club : etd.getClubModelList()) {
-                        docs.addAll(club.getDocumentModelList());
-                    }
-                    return docs;
-                }
+        for (DocumentModel doc : documentModelList) {
+            if (doc.getAdminModel() != null) {
+                DocumentsAdminResponseDTO d = new DocumentsAdminResponseDTO();
+                d.setIdDocument(doc.getId_document());
+                d.setLibelle(doc.getLibelle());
+                d.setDateEnvoi(doc.getDateEnvoi());
+                d.setNom(doc.getAdminModel().getNom());
+                d.setPrenom(doc.getAdminModel().getPrenom());
+                docsList.add(d);
             }
         }
 
-        if (optionalReferentID.isPresent() && role == null) {
-            ReferentAcademiqueModel ref = optionalReferentID.get();
-            List<DocumentModel> docs = new ArrayList<>();
-            for (ClubModel club : ref.getClubModelList()) {
-                docs.addAll(club.getDocumentModelList());
-            }
-            return docs;
-        }
-
-        // Use a logger for better logging in production.
-        System.out.println("No matching user or role.");
-        throw new EntityNotFoundException("User exists but doesn't have the expected role.");
+        return docsList;
     }
-*/
 
 
 

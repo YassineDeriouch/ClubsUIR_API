@@ -1,6 +1,7 @@
 package com.example.api.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ public class DocumentModel {
     private ReferentAcademiqueModel referent;
 
     @ManyToOne(optional = true)
+    @JsonManagedReference
     @JoinColumn(name = "admin_model_id")
     private AdminModel adminModel ;
 
