@@ -128,8 +128,6 @@ public class EvenementController {
         }
     }
 
-
-
     /**
      * le nombre des événements par un club specifique (Dashboard)
      * @param clubName

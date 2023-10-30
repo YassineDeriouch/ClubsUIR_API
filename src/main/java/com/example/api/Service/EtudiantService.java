@@ -162,7 +162,12 @@ public class EtudiantService {
         List<ReunionModel> reunionModelList=new ArrayList<>();
         if(opt_etd.isPresent()){
             EtudiantModel etd=opt_etd.get();
-            if(etd.getFkrole().getLibelle().equals("president")){
+            System.out.println("etd role ===> "+ etd.getFkrole().getLibelle());
+            boolean pres =  etd.getFkrole().getLibelle().equals("president");
+            boolean vice =  etd.getFkrole().getLibelle().equals("vice-president");
+            boolean secretaire =  etd.getFkrole().getLibelle().equals("secretaire");
+            boolean tresorier =  etd.getFkrole().getLibelle().equals("tresorier");
+            if(pres || vice || secretaire || tresorier){
                for(ClubModel c:etd.getClubModelList()){
                         reunionModelList.addAll(c.getReunionModel());
                     }

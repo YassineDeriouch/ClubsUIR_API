@@ -114,7 +114,7 @@ public class EtudiantController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping("list/reunion/of/PresidentClubs")
+    @GetMapping("list/reunion/of/etudiantClubs")
     public ResponseEntity<List<ReunionModel>> GetReunionByPresidentClubs(@RequestParam int idEtd){
         try{
             return new ResponseEntity<>(etudiantService.GetReunionByPresidentClubs(idEtd), HttpStatus.OK);
