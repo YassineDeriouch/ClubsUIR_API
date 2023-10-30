@@ -3,6 +3,7 @@ package com.example.api.Controller;
 import com.example.api.Models.*;
 import com.example.api.Service.EvenementService;
 import com.lowagie.text.DocumentException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Data;
@@ -21,6 +22,7 @@ import java.util.List;
 @RequestMapping("evenement")
 @Data
 @CrossOrigin(origins = "*")
+@Tag(name = "Evenement", description = "Gestion des Evenements")
 public class EvenementController {
 
     //Inject EvenementService to the controller to use its methods whith Autowired annotation
@@ -192,6 +194,14 @@ public class EvenementController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    @PutMapping("/update/budget/event")
+    public ResponseEntity<EvenementModel> UpdateBudgetEvent(@RequestParam int idevent,@RequestParam double Budget){
+        try {
+            return new ResponseEntity<>(evenementService.UpdateBudgetEvent(idevent,Budget),HttpStatus.OK);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

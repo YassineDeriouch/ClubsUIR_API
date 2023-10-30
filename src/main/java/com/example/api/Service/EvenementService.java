@@ -312,5 +312,16 @@ public class EvenementService {
         return events;
     }
 
+    public EvenementModel UpdateBudgetEvent(int idEvent,double Budget){
+        Optional<EvenementModel>opt_budget=evenementRepository.findById(idEvent);
+
+        if(opt_budget.isPresent()){
+            EvenementModel evenementModel=opt_budget.get();
+            evenementModel.setBudget(Budget);
+            return evenementRepository.save(evenementModel);
+        }
+        else
+            throw new EntityNotFoundException("Event not found by id : " + idEvent);
+    }
 
 }
