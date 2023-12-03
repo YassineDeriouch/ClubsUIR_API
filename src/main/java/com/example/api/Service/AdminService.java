@@ -1,15 +1,27 @@
 package com.example.api.Service;
 
 import com.example.api.Models.AdminModel;
+import com.example.api.Models.AdminModel;
+import com.example.api.Models.ImageModel;
 import com.example.api.Repository.AdminRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.*;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -118,6 +130,90 @@ public class AdminService {
         }
         else{
             return false;
+        }
+    }
+
+
+    /**
+     * upload admin logo
+     */
+
+    private static final String UPLOAD_DIR = System.getProperty("user.home") + "\\ClubsUIR data\\uploads\\Admin\\profile picture\\";
+
+    public String saveAdminProfilePicture(MultipartFile file, int idAdmin) throws FileSystemException {
+
+        ImageModel imageModelFile = new ImageModel();
+        AdminModel adminModel = adminRepository.findById(idAdmin)
+                .orElseThrow(() -> new EntityNotFoundException("Club not found with ID: " + idAdmin));
+
+        try{
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+            String fileType = file.getContentType();
+
+            List<String> allowedFileExtensions = Arrays.asList("jpg", "jpeg", "png");
+
+            for (String extension : allowedFileExtensions) {
+                if (fileName.contains("..") ) {
+                    throw new FileSystemException("File type not allowed: " + fileName +", file type:" +fileType);
+                }
+            }
+
+            String filePath = UPLOAD_DIR + fileName;
+            System.out.println("filePath===========>>>> " + filePath);
+
+            Path uploadPath = Path.of(UPLOAD_DIR);
+            Files.createDirectories(uploadPath);
+
+            Path destPath = uploadPath.resolve(fileName);
+            Files.copy(file.getInputStream(), destPath, StandardCopyOption.REPLACE_EXISTING);
+
+            // FILE DATA
+            imageModelFile.setFilePath(destPath.toString());
+            imageModelFile.setFileName(fileName);
+            imageModelFile.setFileType(fileType);
+            imageModelFile.setClubLogo(file.getBytes());
+
+            adminModel.setAdminProfilePicturePath(imageModelFile.getFilePath());
+            adminModel.setAdminProfilePictureName(imageModelFile.getFileName());
+            adminRepository.save(adminModel);
+        } catch (IOException e) {
+            System.out.println("IO EXCEPTION");
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            if (e instanceof FileAlreadyExistsException)
+                throw new RuntimeException("A file of that name already exists.");
+        }
+        return imageModelFile.getFilePath();
+    }
+
+    public ResponseEntity<Resource> getAdminProfilePicture(int idAdmin) throws IOException {
+        Optional<AdminModel> adminOptional = adminRepository.findById(idAdmin);
+
+        if (adminOptional.isPresent()) {
+            AdminModel admin = adminOptional.get();
+            String imageName = admin.getAdminProfilePictureName();
+
+            Path imagePath = Path.of(UPLOAD_DIR, imageName);
+            FileSystemResource resource = new FileSystemResource(imagePath);
+
+            if (resource.exists()) {
+                MediaType contentType;
+                if (imageName.endsWith(".png")) {
+                    contentType = MediaType.IMAGE_PNG;
+                }else if (imageName.endsWith(".jpg")) {
+                    contentType = MediaType.IMAGE_PNG;
+                } else {
+                    contentType = MediaType.IMAGE_JPEG;
+                }
+
+                return ResponseEntity.ok()
+                        .contentType(contentType)
+                        .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 

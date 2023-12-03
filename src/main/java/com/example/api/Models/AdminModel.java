@@ -1,6 +1,7 @@
     package com.example.api.Models;
 
     import com.fasterxml.jackson.annotation.JsonBackReference;
+    import com.fasterxml.jackson.annotation.JsonIgnore;
     import jakarta.persistence.*;
     import lombok.Data;
 
@@ -33,4 +34,7 @@
         @JsonBackReference
         @OneToMany(mappedBy = "adminModel")
         public List<DocumentModel> adminDocuments;
+
+        @JsonIgnore String adminProfilePicturePath = new ImageModel().getFilePath();
+        @JsonIgnore String adminProfilePictureName = new ImageModel().getFileName();
     }

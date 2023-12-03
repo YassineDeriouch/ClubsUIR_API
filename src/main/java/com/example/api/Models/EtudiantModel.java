@@ -47,5 +47,8 @@ public class EtudiantModel {
     @OneToMany(mappedBy = "etudiant", cascade = CascadeType.ALL)
     private List<DemandeModel> demandes;
 
+    @JsonIgnore String etudiantProfilePicturePath = new ImageModel().getFilePath();
+    @JsonIgnore String etudiantProfilePictureName = new ImageModel().getFileName();
+
 
 }

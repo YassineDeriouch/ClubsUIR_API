@@ -8,10 +8,15 @@ import com.example.api.Service.ReferentAcademiqueService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.FileSystemException;
 import java.util.List;
 import java.util.Map;
 
@@ -138,5 +143,19 @@ public class ReferentAcademiqueController {
             exception.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    /**
+     * Upload and get referent profile picture endpoints
+     */
+
+    @PostMapping(value = "/upload/profilePicture/idReferent={id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<String> uploadReferentProfilePicture(@RequestPart MultipartFile logo, @PathVariable int id) throws FileSystemException {
+        return new ResponseEntity<>(referentService.saveReferentProfilePicture(logo, id), HttpStatus.OK);
+    }
+
+    @GetMapping("/get/profilePicture/idReferent={idReferent}")
+    public ResponseEntity<Resource> getImage(@PathVariable int idReferent) throws IOException {
+        return referentService.getReferentProfilePicture(idReferent);
     }
 }

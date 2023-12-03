@@ -9,10 +9,15 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.FileSystemException;
 import java.util.List;
 import java.util.Map;
 
@@ -122,6 +127,20 @@ public class EtudiantController {
             exception.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    /**
+     * Upload and get etudiant profile picture endpoints
+     */
+
+    @PostMapping(value = "/upload/profilePicture/idEtudiant={id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<String> uploadEtudiantProfilePicture(@RequestPart MultipartFile logo, @PathVariable int id) throws FileSystemException {
+        return new ResponseEntity<>(etudiantService.saveEtudiantProfilePicture(logo, id), HttpStatus.OK);
+    }
+
+    @GetMapping("/get/profilePicture/idEtudiant={idEtudiant}")
+    public ResponseEntity<Resource> getImage(@PathVariable int idEtudiant) throws IOException {
+        return etudiantService.getEtudiantProfilePicture(idEtudiant);
     }
 
 }

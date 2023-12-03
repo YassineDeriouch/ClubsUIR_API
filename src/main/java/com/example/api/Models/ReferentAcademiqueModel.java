@@ -1,5 +1,6 @@
 package com.example.api.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringExclude;
@@ -30,4 +31,8 @@ public class ReferentAcademiqueModel {
             joinColumns = @JoinColumn(name = "id_referent"),
             inverseJoinColumns = @JoinColumn(name = "id_club"))
     private List<ClubModel> clubModelList;
+
+    @JsonIgnore String referentProfilePicturePath = new ImageModel().getFilePath();
+    @JsonIgnore String referentProfilePictureName = new ImageModel().getFileName();
 }
+

@@ -9,12 +9,18 @@ import lombok.Data;
 import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.io.IOException;
+import java.nio.file.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -64,6 +70,7 @@ public class ClubService {
             existingClub.setLibelle(clubModel.getLibelle());
             existingClub.setType(clubModel.getType());
             existingClub.setStatut(clubModel.getStatut());
+            existingClub.setDescription(clubModel.getDescription());
 
             // Set the etudiantModelList back to its original value
             existingClub.setEtudiantModelList(originalEtudiantList);
@@ -195,6 +202,7 @@ public class ClubService {
         EtudiantModel etudiantModel = etudiantRepository.findById(idEtd).get();
         clubModel.setType(clubModel.getType());
         clubModel.setLibelle(clubModel.getLibelle());
+        clubModel.setDescription(clubModel.getDescription());
         if (clubModel.getEtudiantModelList() == null) {
             clubModel.setEtudiantModelList(new ArrayList<>()); // initialisation de la liste
         }
@@ -212,7 +220,7 @@ public class ClubService {
         return clubRepository.findClubModelByStatut(clubStatut).stream().map(element -> modelMapper.map(element, ClubModel.class))
                 .collect(Collectors.toList());
     }
-    //filter accepted clubs list where the user doesn't exist for a user to integer a new club 
+    //filter accepted clubs list where the user doesn't exist for a user to join a new club
     @Transactional
     public List<ClubModel> getClubsAccepteWhereUserNotExists(int idEtudiant) throws EntityNotFoundException {
         return clubRepository.findClubsByStatutWhereUserDoesNotExist(idEtudiant).stream().map(element -> modelMapper.map(element, ClubModel.class))
@@ -292,6 +300,91 @@ public class ClubService {
             throw new EntityNotFoundException("this etudiant does not exist !"+ idEtudiant);
         }
     }
+
+
+    /**
+     * upload club logo
+     */
+
+    private static final String UPLOAD_DIR = System.getProperty("user.home") + "\\ClubsUIR data\\uploads\\Clubs\\logos\\";
+
+    public String saveCLubLogo(MultipartFile file, int idClub) throws FileSystemException {
+
+        ImageModel imageModelFile = new ImageModel();
+        ClubModel clubModel = clubRepository.findById(idClub)
+                .orElseThrow(() -> new EntityNotFoundException("Club not found with ID: " + idClub));
+
+        try{
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+            String fileType = file.getContentType();
+
+            List<String> allowedFileExtensions = Arrays.asList("jpg", "jpeg", "png", "gif");
+
+            for (String extension : allowedFileExtensions) {
+                if (fileName.contains("..") ) {
+                    throw new FileSystemException("File type not allowed: " + fileName +", file type:" +fileType);
+                }
+            }
+
+            String filePath = UPLOAD_DIR + fileName;
+            System.out.println("filePath===========>>>> " + filePath);
+
+            Path uploadPath = Path.of(UPLOAD_DIR);
+            Files.createDirectories(uploadPath);
+
+            Path destPath = uploadPath.resolve(fileName);
+            Files.copy(file.getInputStream(), destPath, StandardCopyOption.REPLACE_EXISTING);
+
+            // FILE DATA
+            imageModelFile.setFilePath(destPath.toString());
+            imageModelFile.setFileName(fileName);
+            imageModelFile.setFileType(fileType);
+            imageModelFile.setClubLogo(file.getBytes());
+
+            clubModel.setClubLogoPath(imageModelFile.getFilePath());
+            clubModel.setClubLogoName(imageModelFile.getFileName());
+            clubRepository.save(clubModel);
+        } catch (IOException e) {
+            System.out.println("IO EXCEPTION");
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            if (e instanceof FileAlreadyExistsException)
+                throw new RuntimeException("A file of that name already exists.");
+        }
+        return imageModelFile.getFilePath();
+    }
+
+    public ResponseEntity<Resource> getClubLogo(int idClub) throws IOException {
+        Optional<ClubModel> clubOptional = clubRepository.findById(idClub);
+
+        if (clubOptional.isPresent()) {
+            ClubModel club = clubOptional.get();
+            String imageName = club.getClubLogoName();
+
+            Path imagePath = Path.of(UPLOAD_DIR, imageName);
+            FileSystemResource resource = new FileSystemResource(imagePath);
+
+            if (resource.exists()) {
+                    MediaType contentType;
+                    if (imageName.endsWith(".png")) {
+                        contentType = MediaType.IMAGE_PNG;
+                    }else if (imageName.endsWith(".jpg")) {
+                        contentType = MediaType.IMAGE_PNG;
+                    } else {
+                        contentType = MediaType.IMAGE_JPEG;
+                    }
+
+                    return ResponseEntity.ok()
+                            .contentType(contentType)
+                            .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
 
 

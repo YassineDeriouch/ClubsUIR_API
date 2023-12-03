@@ -1,11 +1,9 @@
     package com.example.api.Models;
 
-    import com.fasterxml.jackson.annotation.JsonBackReference;
     import com.fasterxml.jackson.annotation.JsonIgnore;
     import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
     import jakarta.persistence.*;
     import lombok.Data;
-    import lombok.ToString;
     import org.apache.commons.lang3.builder.ToStringExclude;
 
     import java.util.List;
@@ -22,6 +20,9 @@
 
         @Column(name="libelle", nullable = false)
         private String libelle;
+
+        @Column(name="description")
+        private String description;
 
         @Enumerated(EnumType.STRING)
         @Column(name="type", nullable = false)
@@ -73,5 +74,9 @@
         @JsonIgnore
         @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
         private List<DemandeModel> demandes;
+
+
+        String clubLogoPath = new ImageModel().getFilePath();
+        String clubLogoName = new ImageModel().getFileName();
 
     }

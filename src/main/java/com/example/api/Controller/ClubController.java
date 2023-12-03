@@ -10,11 +10,18 @@ import jakarta.validation.Valid;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.FileSystemException;
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -287,5 +294,22 @@ public class ClubController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    /**
+     * Upload club logo endpoint
+     */
+
+
+    @PostMapping(value = "/upload/logo/idClub={id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<String> uploadClubLogo(@RequestPart MultipartFile logo,@PathVariable int id) throws FileSystemException {
+        return new ResponseEntity<>(clubService.saveCLubLogo(logo, id), HttpStatus.OK);
+    }
+
+    @GetMapping("/get/logo/idClub={idClub}")
+    public ResponseEntity<Resource> getImage(@PathVariable int idClub) throws IOException {
+        return clubService.getClubLogo(idClub);
+    }
+
 
 }
