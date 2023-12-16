@@ -237,7 +237,7 @@ public class ReferentAcademiqueService {
             imageModelFile.setFilePath(destPath.toString());
             imageModelFile.setFileName(fileName);
             imageModelFile.setFileType(fileType);
-            imageModelFile.setClubLogo(file.getBytes());
+            imageModelFile.setImageFile(file.getBytes());
 
             referentModel.setReferentProfilePicturePath(imageModelFile.getFilePath());
             referentModel.setReferentProfilePictureName(imageModelFile.getFileName());

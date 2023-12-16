@@ -75,8 +75,8 @@
         @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
         private List<DemandeModel> demandes;
 
-
         String clubLogoPath = new ImageModel().getFilePath();
+        String clubLogoURL;
         String clubLogoName = new ImageModel().getFileName();
 
     }

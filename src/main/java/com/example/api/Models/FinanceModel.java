@@ -28,6 +28,9 @@ public class FinanceModel {
     @Column(name = "libelle")
     private String libelle;
 
+    @Column(name = "depenses")
+    private double depenses;
+
     @Column(name = "annee")
     @CreatedDate
     @DateTimeFormat(pattern = "yyyy")
@@ -37,6 +40,10 @@ public class FinanceModel {
     @OneToOne
     @JoinColumn(name = "id_evenement")
     private EvenementModel eventModel;
+
+    @OneToOne
+    @JoinColumn(name = "id_club")
+    private ClubModel clubModel;
 
     @JsonIgnore
     @OneToOne

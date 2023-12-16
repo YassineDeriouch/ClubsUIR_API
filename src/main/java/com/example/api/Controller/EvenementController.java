@@ -3,18 +3,23 @@ package com.example.api.Controller;
 import com.example.api.Models.*;
 import com.example.api.Service.EvenementService;
 import com.lowagie.text.DocumentException;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.nio.file.FileSystemException;
 import java.text.DateFormat;
 import java.util.List;
 
@@ -200,6 +205,21 @@ public class EvenementController {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**
+     * Upload event logo endpoint
+     */
+
+    @Operation(summary= "upload club logo",description = "Set/update event image in local system")
+    @PostMapping(value = "/upload/image/idEvent={id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<String> uploadEventImage(@RequestPart MultipartFile logo, @PathVariable int id, UriComponentsBuilder uriBuilder) throws FileSystemException {
+        return new ResponseEntity<>(evenementService.saveEventImage(logo, id,uriBuilder), HttpStatus.OK);
+    }
+    @Operation(summary= "retrieve club logo",description = "Retrieve the club logo from the local system")
+    @GetMapping("/get/image/idEvent={idEvent}")
+    public ResponseEntity<Resource> getImage(@PathVariable int idEvent) throws IOException {
+        return evenementService.getEventImage(idEvent);
     }
 
 }

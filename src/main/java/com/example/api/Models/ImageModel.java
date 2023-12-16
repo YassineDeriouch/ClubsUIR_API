@@ -12,7 +12,7 @@ import lombok.Data;
 public class ImageModel {
 
     @JsonIgnore
-    private byte[] clubLogo;
+    private byte[] imageFile;
 
     private String fileName;
 

@@ -2,6 +2,8 @@ package com.example.api.Controller;
 
 import com.example.api.Models.AdminModel;
 import com.example.api.Service.AdminService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +29,12 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("admin")
+@Tag(name = "Admin", description = "gestion d'administrateur")
 public class AdminController {
 
     private final AdminService adminService;
 
+    @Operation(summary= "save new admin",description = "save a new admin in the DB")
     @PostMapping(value = "/save")
     public ResponseEntity<AdminModel> saveAdmin(@RequestBody AdminModel adminModel){
         try{
@@ -40,7 +44,7 @@ public class AdminController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    @Operation(summary= "update admin",description = "Update an existing admin ")
     @PutMapping(value = "/update/{idAdmin}")
     public ResponseEntity<AdminModel> updateAdmin(@PathVariable int idAdmin, @RequestBody AdminModel adminModel){
         try{
@@ -52,7 +56,7 @@ public class AdminController {
     }
 
 
-
+    @Operation(summary= "get one admin",description = "Retrieve the details of one specific admin ")
     @CrossOrigin("*")
     @GetMapping(value = "/get/{id}")
     public ResponseEntity<AdminModel> getRoleByID(@PathVariable int id){
@@ -63,6 +67,8 @@ public class AdminController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @Operation(summary= "get all admins",description = "Retrieve the list of the existing admins in the DB ")
     @CrossOrigin
     @GetMapping(value = "/get/all")
     public ResponseEntity<List<AdminModel>> getAllRoles(){
@@ -74,6 +80,7 @@ public class AdminController {
         }
     }
 
+    @Operation(summary = "delete an admin", description = "Delete one specific admin from the DB")
     @CrossOrigin
     @DeleteMapping(value = "/delete/{id}")
     public ResponseEntity<AdminModel> deleteRoleByID(@PathVariable int id){

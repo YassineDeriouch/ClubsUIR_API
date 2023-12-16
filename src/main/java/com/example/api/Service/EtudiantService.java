@@ -224,7 +224,7 @@ public class EtudiantService {
             imageModelFile.setFilePath(destPath.toString());
             imageModelFile.setFileName(fileName);
             imageModelFile.setFileType(fileType);
-            imageModelFile.setClubLogo(file.getBytes());
+            imageModelFile.setImageFile(file.getBytes());
 
             etudiantModel.setEtudiantProfilePicturePath(imageModelFile.getFilePath());
             etudiantModel.setEtudiantProfilePictureName(imageModelFile.getFileName());

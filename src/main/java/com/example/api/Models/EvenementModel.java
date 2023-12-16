@@ -17,16 +17,25 @@
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private int id_evenement;
+
         @Column(name="libelle")
         private String libelle;
+
         @Column(name="date_debut")
         private Date date_debut;
+
         @Column(name="date_fin")
         private Date date_fin;
+
         @Column(name="Type_event")
         private String type;
+
         @Column(name="budget")
         private double budget;
+
+        @Column(name="description")
+        private String description;
+
         @Column(name="statut_event")
         @Enumerated(EnumType.STRING)
         private EvenementStatut statut;
@@ -42,4 +51,7 @@
         private List<ClubModel> participants;
 
 
+        String eventImagePath = new ImageModel().getFilePath();
+        String eventImageURL;
+        String eventImageName = new ImageModel().getFileName();
     }

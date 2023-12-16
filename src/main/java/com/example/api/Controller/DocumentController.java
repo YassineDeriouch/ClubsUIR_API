@@ -4,9 +4,10 @@ import com.example.api.Models.DocumentModel;
 import com.example.api.Models.DocumentsAdminResponseDTO;
 import com.example.api.Models.ResponseData;
 import com.example.api.Service.DocumentService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -27,12 +28,13 @@ import java.util.Objects;
  */
 @Data
 @CrossOrigin(origins="*")
-
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("document")
+@Tag(name = "Document", description = "Documents management API")
 public class DocumentController {
 
-    @Autowired private DocumentService documentService;
+    private final DocumentService documentService;
     public static String fn, ft;
 
     @CrossOrigin(origins = "*")

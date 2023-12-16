@@ -1,10 +1,12 @@
 package com.example.api.Service;
 
+import com.example.api.Controller.ClubController;
 import com.example.api.Models.*;
 import com.example.api.Repository.ClubRepository;
 import com.example.api.Repository.EtudiantRepository;
 import com.example.api.Repository.ReferentAcademiqueRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
@@ -17,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -198,7 +202,7 @@ public class ClubService {
 
     //Envoyer une demande de création de club
     @Transactional
-    public ClubModel EnvoyerDem(int idEtd, ClubModel clubModel) {
+    public ClubModel EnvoyerDem(int idEtd, ClubModel clubModel, UriComponentsBuilder uriBuilder) {
         EtudiantModel etudiantModel = etudiantRepository.findById(idEtd).get();
         clubModel.setType(clubModel.getType());
         clubModel.setLibelle(clubModel.getLibelle());
@@ -210,7 +214,10 @@ public class ClubService {
         clubModel.setReferent(clubModel.getReferent());
         //clubModel.setStatus(String.valueOf(ClubStatut.en_attente));
         clubModel.setStatut(ClubStatut.en_attente);
+
         ClubModel club = clubRepository.save(clubModel);
+        generateLogoURL(clubModel.getId_club(),uriBuilder,clubModel); // set the URL to get club logo from /get/logo/idClub={idClub}
+
         return modelMapper.map(club, ClubModel.class);
     }
 
@@ -308,7 +315,7 @@ public class ClubService {
 
     private static final String UPLOAD_DIR = System.getProperty("user.home") + "\\ClubsUIR data\\uploads\\Clubs\\logos\\";
 
-    public String saveCLubLogo(MultipartFile file, int idClub) throws FileSystemException {
+    public String saveCLubLogo(MultipartFile file, int idClub,UriComponentsBuilder uriBuilder) throws FileSystemException {
 
         ImageModel imageModelFile = new ImageModel();
         ClubModel clubModel = clubRepository.findById(idClub)
@@ -339,11 +346,18 @@ public class ClubService {
             imageModelFile.setFilePath(destPath.toString());
             imageModelFile.setFileName(fileName);
             imageModelFile.setFileType(fileType);
-            imageModelFile.setClubLogo(file.getBytes());
+            imageModelFile.setImageFile(file.getBytes());
 
             clubModel.setClubLogoPath(imageModelFile.getFilePath());
             clubModel.setClubLogoName(imageModelFile.getFileName());
+
+            String fullPath = uriBuilder.path("/club/get/logo/idClub=" + idClub).toUriString();
+            clubModel.setClubLogoURL(fullPath);
+
+            System.out.println("clubLogoURL: "+ clubModel.getClubLogoURL());
+
             clubRepository.save(clubModel);
+
         } catch (IOException e) {
             System.out.println("IO EXCEPTION");
             throw new RuntimeException(e);
@@ -383,6 +397,12 @@ public class ClubService {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    public void generateLogoURL(int idClub, UriComponentsBuilder uriBuilder,ClubModel clubModel) {
+        String fullPath = uriBuilder.path("/club/get/logo/idClub=" + idClub).toUriString();
+        clubModel.setClubLogoURL(fullPath);
+        clubRepository.save(clubModel);
     }
 
 

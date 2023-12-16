@@ -171,7 +171,7 @@ public class AdminService {
             imageModelFile.setFilePath(destPath.toString());
             imageModelFile.setFileName(fileName);
             imageModelFile.setFileType(fileType);
-            imageModelFile.setClubLogo(file.getBytes());
+            imageModelFile.setImageFile(file.getBytes());
 
             adminModel.setAdminProfilePicturePath(imageModelFile.getFilePath());
             adminModel.setAdminProfilePictureName(imageModelFile.getFileName());

@@ -2,24 +2,31 @@ package com.example.api.Controller;
 
 import com.example.api.Models.CompteDto;
 import com.example.api.Service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Data;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Data
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("authentication")
 @CrossOrigin(origins = "*")
+@Tag(name = "Authentication", description = "Login system")
 public class AuthController {
 
-    @Autowired private AuthService authService;
-    @Autowired private HttpServletRequest request;
-    @Autowired private HttpServletResponse response;
+    private final AuthService authService;
+    private final HttpServletRequest request;
+    private final HttpServletResponse response;
+
+    @Operation(summary= "login",description = "sign in an existing user in the DB")
     @PostMapping("/login")
     public ResponseEntity<CompteDto> Authentication(@RequestParam String email,@RequestParam String password){
         try{

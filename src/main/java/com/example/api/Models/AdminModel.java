@@ -26,6 +26,8 @@
         private String prenom;
         @Column(name="email")
         private String email;
+        @Column(name="emailBDE")
+        private String emailBDE;
         @Column(name="password")
         private String password;
         @Column(name="telephone")
