@@ -57,7 +57,7 @@ public class ReferentAcademiqueService {
      * @param id
      * @return
      */
-    @Transactional
+    /*@Transactional
     public ReferentAcademiqueModel updateReferent(ReferentAcademiqueModel referent, int id) throws EntityNotFoundException {
         Optional<ReferentAcademiqueModel> referentOptional = referentRepository.findById(id);
         if (referentOptional.isPresent()) {
@@ -68,6 +68,16 @@ public class ReferentAcademiqueService {
         } else {
             throw new EntityNotFoundException("this club does not exist !!");
         }
+    }*/
+
+    @Transactional
+    public ReferentAcademiqueModel updateReferent(UserDTO referentDTO,int id) throws EntityNotFoundException {
+        ReferentAcademiqueModel existingReferent = referentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("referent not found"));
+        modelMapper.map(referentDTO, existingReferent);
+        existingReferent.setId_referent(id);
+        ReferentAcademiqueModel updatedReferent = referentRepository.save(existingReferent);
+        return modelMapper.map(updatedReferent, ReferentAcademiqueModel.class);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.example.api.Service;
 
+import com.example.api.Models.AdminDTO;
 import com.example.api.Models.AdminModel;
 import com.example.api.Models.AdminModel;
 import com.example.api.Models.ImageModel;
@@ -60,17 +61,20 @@ public class AdminService {
      * @throws EntityNotFoundException
      */
     @Transactional
-    public AdminModel updateAdmin(int idAdmin, AdminModel adminModel) throws EntityNotFoundException {
-        Optional<AdminModel> adminOptional = adminRepository.findById(idAdmin);
-        if(adminOptional.isPresent()){
-           AdminModel adminModel1 =  modelMapper.map(adminModel, AdminModel.class);
-           adminModel1.setId_admin(idAdmin);
-           AdminModel updated = adminRepository.save(adminModel1);
-           return modelMapper.map(updated, AdminModel.class);
-        }else{
-            throw new EntityNotFoundException("Not found !");
-        }
+    public AdminModel updateAdmin(int idAdmin, AdminDTO adminDTO) throws EntityNotFoundException {
+        AdminModel existingAdmin = adminRepository.findById(idAdmin)
+                .orElseThrow(() -> new EntityNotFoundException("Admin not found"));
+
+        // Map all fields from AdminDTO to existingAdmin
+        modelMapper.map(adminDTO, existingAdmin);
+
+        // Set the ID to ensure it's not overwritten
+        existingAdmin.setId_admin(idAdmin);
+
+        AdminModel updatedAdmin = adminRepository.save(existingAdmin);
+        return modelMapper.map(updatedAdmin, AdminModel.class);
     }
+
 
     /**
      * GET ADMIN BY ID

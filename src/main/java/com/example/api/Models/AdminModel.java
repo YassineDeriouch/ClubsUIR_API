@@ -33,10 +33,14 @@
         @Column(name="telephone")
         private String telephone;
 
+        @JsonIgnore
         @JsonBackReference
         @OneToMany(mappedBy = "adminModel")
         public List<DocumentModel> adminDocuments;
 
-        @JsonIgnore String adminProfilePicturePath = new ImageModel().getFilePath();
-        @JsonIgnore String adminProfilePictureName = new ImageModel().getFileName();
+        @JsonIgnore
+        String adminProfilePicturePath = new ImageModel().getFilePath();
+
+        @JsonIgnore
+        String adminProfilePictureName = new ImageModel().getFileName();
     }

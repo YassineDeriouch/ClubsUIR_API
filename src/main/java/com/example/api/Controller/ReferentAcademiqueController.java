@@ -1,9 +1,6 @@
 package com.example.api.Controller;
 
-import com.example.api.Models.EtudiantModel;
-import com.example.api.Models.ReferentAcademiqueModel;
-import com.example.api.Models.ReunionModel;
-import com.example.api.Models.RoleModel;
+import com.example.api.Models.*;
 import com.example.api.Service.ReferentAcademiqueService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
@@ -57,7 +54,7 @@ public class ReferentAcademiqueController {
      */
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ReferentAcademiqueModel> updateReferent(@RequestBody ReferentAcademiqueModel referent,@PathVariable int id){
+    public ResponseEntity<ReferentAcademiqueModel> updateReferent(@RequestBody UserDTO referent, @PathVariable int id){
         try {
             return new ResponseEntity<>(referentService.updateReferent(referent, id), HttpStatus.OK);
         }catch (EntityNotFoundException exception){

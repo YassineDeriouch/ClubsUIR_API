@@ -1,5 +1,6 @@
 package com.example.api.Controller;
 
+import com.example.api.Models.AdminDTO;
 import com.example.api.Models.AdminModel;
 import com.example.api.Service.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,9 +47,9 @@ public class AdminController {
     }
     @Operation(summary= "update admin",description = "Update an existing admin ")
     @PutMapping(value = "/update/{idAdmin}")
-    public ResponseEntity<AdminModel> updateAdmin(@PathVariable int idAdmin, @RequestBody AdminModel adminModel){
+    public ResponseEntity<AdminModel> updateAdmin(@PathVariable int idAdmin, @RequestBody AdminDTO adminDTO){
         try{
-            return new ResponseEntity<>(adminService.updateAdmin(idAdmin,adminModel), HttpStatus.OK);
+            return new ResponseEntity<>(adminService.updateAdmin(idAdmin,adminDTO), HttpStatus.OK);
         }catch (Exception exception){
             exception.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

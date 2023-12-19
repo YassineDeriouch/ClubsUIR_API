@@ -364,7 +364,7 @@ public class EvenementService {
             evenementModel.setEventImagePath(imageModelFile.getFilePath());
             evenementModel.setEventImageName(imageModelFile.getFileName());
 
-            String fullPath = uriBuilder.path("/club/get/logo/idEvent=" + idEvent).toUriString();
+            String fullPath = uriBuilder.path("/evenement/get/image/idEvent=" + idEvent).toUriString();
             evenementModel.setEventImageURL(fullPath);
 
             System.out.println("eventImageURL: "+ evenementModel.getEventImageURL());
@@ -412,8 +412,8 @@ public class EvenementService {
         }
     }
 
-    public void generateLogoURL(int idEvent, UriComponentsBuilder uriBuilder,EvenementModel evenementModel) {
-        String fullPath = uriBuilder.path("/club/get/logo/idEvent=" + idEvent).toUriString();
+    public void generateImageURL(int idEvent, UriComponentsBuilder uriBuilder,EvenementModel evenementModel) {
+        String fullPath = uriBuilder.path("/evenement/get/logo/idEvent=" + idEvent).toUriString();
         evenementModel.setEventImageURL(fullPath);
         evenementRepository.save(evenementModel);
     }
