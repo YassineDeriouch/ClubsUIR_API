@@ -60,7 +60,7 @@ public class AdminController {
     @Operation(summary= "get one admin",description = "Retrieve the details of one specific admin ")
     @CrossOrigin("*")
     @GetMapping(value = "/get/{id}")
-    public ResponseEntity<AdminModel> getRoleByID(@PathVariable int id){
+    public ResponseEntity<AdminModel> getAdminByID(@PathVariable int id){
         try{
             return new ResponseEntity<>(adminService.getAdminByID(id), HttpStatus.OK);
         }catch (EntityNotFoundException exception){
@@ -72,7 +72,7 @@ public class AdminController {
     @Operation(summary= "get all admins",description = "Retrieve the list of the existing admins in the DB ")
     @CrossOrigin
     @GetMapping(value = "/get/all")
-    public ResponseEntity<List<AdminModel>> getAllRoles(){
+    public ResponseEntity<List<AdminModel>> getAllAdmins(){
         try {
             return new ResponseEntity<>(adminService.getAllAdmin(), HttpStatus.OK);
         }catch (EntityNotFoundException exception){
@@ -84,7 +84,7 @@ public class AdminController {
     @Operation(summary = "delete an admin", description = "Delete one specific admin from the DB")
     @CrossOrigin
     @DeleteMapping(value = "/delete/{id}")
-    public ResponseEntity<AdminModel> deleteRoleByID(@PathVariable int id){
+    public ResponseEntity<AdminModel> deleteAdminByID(@PathVariable int id){
         try{
             return new ResponseEntity<>(adminService.deleteAdmin(id), HttpStatus.OK);
         }catch (EntityNotFoundException exception){
